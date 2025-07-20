@@ -1,3 +1,6 @@
+image:
+  name: golang:1.24.2-bookworm
+
 variables:
   GIT_DEPTH: 0
   GIT_STRATEGY: clone
@@ -5,53 +8,37 @@ variables:
   HUGO_VERSION: 0.148.0
   DART_SASS_VERSION: 1.89.2
   TZ: America/Recife
+
 stages:
-  - setup
   - build
   - compress
   - deploy
 
-image:
-  name: golang:1.24.2-bookworm
-
-setup_dependencies:
-  stage: setup
+build_site:
+  stage: build
   script:
     # Create local directory for dependencies
     - mkdir -p ./env/bin
-    # Install brotli
-    - apt-get update
-    - apt-get install -y brotli
+
     # Install Dart Sass
     - curl -LJO https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz
     - tar -xf dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz
     - cp -r dart-sass/* ./env/bin/
     - rm -rf dart-sass*
+
     # Install Hugo
     - curl -LJO https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb
     - dpkg-deb -x ./hugo_extended_${HUGO_VERSION}_linux-amd64.deb ./hugo_temp
     - cp ./hugo_temp/usr/local/bin/hugo ./env/bin/
     - rm -rf hugo_temp hugo_extended_${HUGO_VERSION}_linux-amd64.deb
+
     # Make binaries executable
     - chmod +x ./env/bin/*
-  artifacts:
-    paths:
-      - env/
-    expire_in: 1 hour
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-build_site:
-  stage: build
-  dependencies:
-    - setup_dependencies
-  script:
-    # Configure environment with shared dependencies
-    - export PATH=$PWD/env/bin:$PATH
     # Configure Git
     - git config core.quotepath false
+
     # Build
-    # - hugo --gc --minify --baseURL ${CI_PAGES_URL}
     - hugo --gc --minify
   artifacts:
     paths:
@@ -68,8 +55,17 @@ compress_assets:
   script:
     # Configure environment with shared dependencies
     - export PATH=$PWD/env/bin:$PATH
-    # Compress
+
+    # Update package registry
+    - apt-get update
+
+    # Install brotli for compression
+    - apt-get install -y brotli
+
+    # Compress with gzip
     - find public -type f -regex '.*\.\(css\|html\|js\|txt\|xml\)$' -exec gzip -f -k {} \;
+
+    # Compress with brotli
     - find public -type f -regex '.*\.\(css\|html\|js\|txt\|xml\)$' -exec brotli -f -k {} \;
   artifacts:
     paths:
