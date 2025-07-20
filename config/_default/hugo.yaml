@@ -10,7 +10,7 @@ params:
     enabled: true
     title: Paulo T. Nascimento
     imageUrl: 451f7e89247904160e086c31b96821a00aa8c4f33ffedda0c92933ea68b78bc3.jpg
-    imageTitle: Foto de Paulo T. Nascimento
+    imageTitle: Foto de Paulo
 
   socialIcons:
     - name: linkedin
