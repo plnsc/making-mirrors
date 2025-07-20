@@ -18,25 +18,25 @@ setup_dependencies:
   stage: setup
   script:
     # Create local directory for dependencies
-    - mkdir -p ./dependencies/bin
+    - mkdir -p ./env/bin
     # Install brotli
     - apt-get update
     - apt-get install -y brotli
     # Install Dart Sass
     - curl -LJO https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz
     - tar -xf dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz
-    - cp -r dart-sass/* ./dependencies/bin/
+    - cp -r dart-sass/* ./env/bin/
     - rm -rf dart-sass*
     # Install Hugo
     - curl -LJO https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb
     - dpkg-deb -x ./hugo_extended_${HUGO_VERSION}_linux-amd64.deb ./hugo_temp
-    - cp ./hugo_temp/usr/local/bin/hugo ./dependencies/bin/
+    - cp ./hugo_temp/usr/local/bin/hugo ./env/bin/
     - rm -rf hugo_temp hugo_extended_${HUGO_VERSION}_linux-amd64.deb
     # Make binaries executable
-    - chmod +x ./dependencies/bin/*
+    - chmod +x ./env/bin/*
   artifacts:
     paths:
-      - dependencies/
+      - env/
     expire_in: 1 hour
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -47,7 +47,7 @@ build_site:
     - setup_dependencies
   script:
     # Configure environment with shared dependencies
-    - export PATH=$PWD/dependencies/bin:$PATH
+    - export PATH=$PWD/env/bin:$PATH
     # Configure Git
     - git config core.quotepath false
     # Build
@@ -67,7 +67,7 @@ compress_assets:
     - setup_dependencies
   script:
     # Configure environment with shared dependencies
-    - export PATH=$PWD/dependencies/bin:$PATH
+    - export PATH=$PWD/env/bin:$PATH
     # Compress
     - find public -type f -regex '.*\.\(css\|html\|js\|txt\|xml\)$' -exec gzip -f -k {} \;
     - find public -type f -regex '.*\.\(css\|html\|js\|txt\|xml\)$' -exec brotli -f -k {} \;
