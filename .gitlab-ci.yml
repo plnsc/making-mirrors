@@ -28,7 +28,8 @@ pages:
     # Configure Git
     - git config core.quotepath false
     # Build
-    - hugo --gc --minify --baseURL ${CI_PAGES_URL}
+    # - hugo --gc --minify --baseURL ${CI_PAGES_URL}
+    - hugo --gc --minify
     # Compress
     - find public -type f -regex '.*\.\(css\|html\|js\|txt\|xml\)$' -exec gzip -f -k {} \;
     - find public -type f -regex '.*\.\(css\|html\|js\|txt\|xml\)$' -exec brotli -f -k {} \;
