@@ -51,7 +51,6 @@ compress_assets:
   stage: compress
   dependencies:
     - build_site
-    - setup_dependencies
   script:
     # Update package registry
     - apt-get update
