@@ -1,4 +1,4 @@
-baseURL: "https://taboza.dev/"
+baseURL: https://taboza.dev
 languageCode: pt-BR
 title: taboza.dev
 theme: ["PaperMod"]
