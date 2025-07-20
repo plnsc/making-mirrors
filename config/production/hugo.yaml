@@ -1,0 +1,7 @@
+# services:
+#   googleAnalytics:
+#     id: G-QG2W4EV564
+
+analytics:
+  google:
+    siteVerificationTag: G-QG2W4EV564

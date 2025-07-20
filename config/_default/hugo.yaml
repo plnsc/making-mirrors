@@ -10,11 +10,14 @@ params:
     enabled: true
     title: Paulo T. Nascimento
     imageUrl: "451f7e89247904160e086c31b96821a00aa8c4f33ffedda0c92933ea68b78bc3.jpg"
+    imageTitle: A photo of Paulo T. Nascimento
 
   socialIcons:
     - name: linkedin
-      url: https://www.linkedin.com/in/plnsc/
+      url: https://www.linkedin.com/in/plnsc
     - name: bluesky
       url: https://bsky.app/profile/taboza.dev
+    - name: discord
+      url: https://discord.com/users/plnsc
     - name: github
       url: https://github.com/plnsc
