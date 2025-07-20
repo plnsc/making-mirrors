@@ -19,5 +19,11 @@ params:
       url: https://bsky.app/profile/taboza.dev
     - name: discord
       url: https://discord.com/users/plnsc
+    - name: lastfm
+      url: https://www.last.fm/user/plnsc
+    - name: letterboxd
+      url: https://letterboxd.com/plnsct
     - name: github
       url: https://github.com/plnsc
+    - name: gitlab
+      url: https://gitlab.com/plnsc
