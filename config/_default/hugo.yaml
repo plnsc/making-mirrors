@@ -17,12 +17,8 @@ params:
       url: https://www.linkedin.com/in/plnsc
     - name: bluesky
       url: https://bsky.app/profile/taboza.dev
-    - name: discord
-      url: https://discord.com/users/plnsc
-    - name: lastfm
-      url: https://www.last.fm/user/plnsc
-    - name: letterboxd
-      url: https://letterboxd.com/plnsct
+    - name: telegram
+      url: https://t.me/plnsct
     - name: github
       url: https://github.com/plnsc
     - name: gitlab
