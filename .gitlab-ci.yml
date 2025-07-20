@@ -1,0 +1,16 @@
+image: alpine:3
+create-pages:
+    pages:
+        stage: deploy
+        script:
+            - apk add --no-cache brotli
+            - apk add --no-cache dart-sass
+            - apk add --no-cache hugo
+            - hugo --gc --minify --baseURL ${CI_PAGES_URL}
+            - find public -type f -regex '.*\.\(css\|html\|js\|txt\|xml\)$' -exec gzip -f -k {} \;
+            - find public -type f -regex '.*\.\(css\|html\|js\|txt\|xml\)$' -exec brotli -f -k {} \;
+    artifacts:
+        paths:
+            - public
+    rules:
+        - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
