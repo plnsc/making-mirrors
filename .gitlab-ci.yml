@@ -53,9 +53,6 @@ compress_assets:
     - build_site
     - setup_dependencies
   script:
-    # Configure environment with shared dependencies
-    - export PATH=$PWD/env/bin:$PATH
-
     # Update package registry
     - apt-get update
 
