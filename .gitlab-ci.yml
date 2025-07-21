@@ -24,13 +24,11 @@ build_site:
     - curl -LJO https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz
     - tar -xf dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz
     - cp -r dart-sass/* ./bin/
-    - rm -rf dart-sass*
 
     # Install Hugo
     - curl -LJO https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb
     - dpkg-deb -x ./hugo_extended_${HUGO_VERSION}_linux-amd64.deb ./hugo_temp
     - cp ./hugo_temp/usr/local/bin/hugo ./bin/
-    - rm -rf hugo_temp hugo_extended_${HUGO_VERSION}_linux-amd64.deb
 
     # Make binaries executable
     - chmod +x ./bin/*
