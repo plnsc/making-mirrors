@@ -4,6 +4,9 @@ title: taboza.dev
 theme: ["PaperMod"]
 enableRobotsTXT: true
 
+# Disable taxonomies temporally (categories and tags)
+taxonomies: {}
+
 params:
 
   profileMode:
