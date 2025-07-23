@@ -319,4 +319,4 @@ MIT License - see [LICENSE.md](LICENSE.md) for details.
 
 ## Author
 
-Paulo Nascimento - [GitHub](https://github.com/plnsc)
+Paulo Nascimento <paulornasc@gmail.com> - [GitHub](https://github.com/plnsc)

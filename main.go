@@ -22,7 +22,7 @@
 //
 //	making-mirrors -input ./repos.txt -output ./mirrors
 //
-// Author: Paulo Nascimento
+// Author: Paulo Nascimento <paulornasc@gmail>
 // License: MIT
 package main
 
@@ -51,7 +51,7 @@ const (
 	AppDescription = "A Go application for creating mirrors of Git repositories"
 
 	// AppAuthor is the author of the application
-	AppAuthor = "Paulo Nascimento"
+	AppAuthor = "Paulo Nascimento <paulornasc@gmail>"
 
 	// AppLicense is the license under which the application is distributed
 	AppLicense = "MIT"

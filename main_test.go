@@ -17,7 +17,7 @@ func TestAppMetadata(t *testing.T) {
 	}{
 		{"AppName", AppName, "making-mirrors"},
 		{"AppVersion", AppVersion, "0.1.0"},
-		{"AppAuthor", AppAuthor, "Paulo Nascimento"},
+		{"AppAuthor", AppAuthor, "Paulo Nascimento <paulornasc@gmail>"},
 		{"AppLicense", AppLicense, "MIT"},
 	}
 
