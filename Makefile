@@ -67,6 +67,7 @@ release: clean test
 	GOOS=darwin GOARCH=amd64 go build -o dist/making-mirrors-x86_64-darwin -ldflags "-X main.version=$(shell cat VERSION)"
 	GOOS=darwin GOARCH=arm64 go build -o dist/making-mirrors-aarch64-darwin -ldflags "-X main.version=$(shell cat VERSION)"
 	GOOS=windows GOARCH=amd64 go build -o dist/making-mirrors-windows-amd64.exe -ldflags "-X main.version=$(shell cat VERSION)"
+	GOOS=windows GOARCH=arm64 go build -o dist/making-mirrors-windows-arm64.exe -ldflags "-X main.version=$(shell cat VERSION)"
 
 	# Create checksums
 	cd dist && sha256sum * > checksums.txt

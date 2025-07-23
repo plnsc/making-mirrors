@@ -15,6 +15,8 @@
         "aarch64-linux"
         "x86_64-darwin"
         "aarch64-darwin"
+        "x86_64-windows"
+        "aarch64-windows"
       ];
 
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
@@ -65,35 +67,39 @@
         making-mirrors = makingMirrorsForSystem final.stdenv.hostPlatform.system;
       };
 
-      # Development shell for x86_64-darwin (your current system)
-      devShells.x86_64-darwin.default =
+      # Development shell for all supported systems
+      devShells = forAllSystems (
+        system:
         let
-          pkgs = import nixpkgs { system = "x86_64-darwin"; };
+          pkgs = import nixpkgs { inherit system; };
         in
-        pkgs.mkShell {
-          name = "making-mirrors-dev-shell";
-          packages = with pkgs; [
-            # Go toolchain
-            go
+        {
+          default = pkgs.mkShell {
+            name = "making-mirrors-dev-shell";
+            packages = with pkgs; [
+              # Go toolchain
+              go
 
-            # Development tools
-            gopls
-            golangci-lint
-            gotools
-            air # Live reload for Go apps
-          ];
+              # Development tools
+              gopls
+              golangci-lint
+              gotools
+              air # Live reload for Go apps
+            ];
 
-          shellHook = ''
-            echo "🐹 Go development environment loaded!"
-            echo "Available commands:"
-            echo "  go build       - Build the project"
-            echo "  go run .       - Run the project"
-            echo "  go test        - Run tests"
-            echo "  go mod tidy    - Tidy up dependencies"
-            echo "  air            - Live reload development server"
-            echo ""
-          '';
-        };
+            shellHook = ''
+              echo "🐹 Go development environment loaded!"
+              echo "Available commands:"
+              echo "  go build       - Build the project"
+              echo "  go run .       - Run the project"
+              echo "  go test        - Run tests"
+              echo "  go mod tidy    - Tidy up dependencies"
+              echo "  air            - Live reload development server"
+              echo ""
+            '';
+          };
+        }
+      );
 
       # App definition for all systems
       apps = forAllSystems (
