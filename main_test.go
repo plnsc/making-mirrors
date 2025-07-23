@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -45,11 +46,17 @@ func TestBuildInfo(t *testing.T) {
 		Version:   "0.0.2-alpha",
 		GitCommit: "abc123",
 		BuildTime: "2025-07-23",
-		GoVersion:   "0.0.2-alpha",
+		GoVersion: runtime.Version(),
 	}
 
 	if info.Version == "" {
 		t.Error("BuildInfo.Version should not be empty")
+	}
+
+	// Test zero value BuildInfo
+	zero := BuildInfo{}
+	if zero.Version != "" {
+		t.Errorf("Zero value Version should be empty, got %q", zero.Version)
 	}
 }
 
@@ -704,11 +711,11 @@ func TestBuildInfoStruct(t *testing.T) {
 			Version:   "0.0.2-alpha",
 			GitCommit: "abc123def",
 			BuildTime: "2025-07-23T10:00:00Z",
-			GoVersion:   "0.0.2-alpha",
+			GoVersion: runtime.Version(),
 		}
 
 		if info.Version != "0.0.2-alpha" {
-			t.Errorf(".0.1-alpha")
+			t.Errorf("Version = %q, want %q", info.Version, "0.0.2-alpha")
 		}
 		if info.GitCommit != "abc123def" {
 			t.Errorf("GitCommit = %q, want %q", info.GitCommit, "abc123def")
@@ -716,15 +723,15 @@ func TestBuildInfoStruct(t *testing.T) {
 		if info.BuildTime != "2025-07-23T10:00:00Z" {
 			t.Errorf("BuildTime = %q, want %q", info.BuildTime, "2025-07-23T10:00:00Z")
 		}
-		if info.GoVersion != "go1.22.0" {
-			t.Errorf("GoVersion = %q, want %q", info.GoVersion, "go1.22.0")
+		if info.GoVersion == "" {
+			t.Errorf("GoVersion should not be empty")
 		}
 	})
 
 	t.Run("zero value BuildInfo", func(t *testing.T) {
 		var info BuildInfo
 
-		if info.Version != "0.0.2-alpha" {
+		if info.Version != "" {
 			t.Errorf("Zero value Version should be empty, got %q", info.Version)
 		}
 		if info.GitCommit != "" {
