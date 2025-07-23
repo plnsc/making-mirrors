@@ -242,4 +242,4 @@ nix flake lock      # Update lock file
 
 ## License
 
-MIT License (add your license file as needed)
+MIT
