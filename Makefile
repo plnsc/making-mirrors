@@ -62,10 +62,10 @@ release: clean test
 	@mkdir -p dist
 
 	# Build for different platforms
-	GOOS=linux GOARCH=amd64 go build -o dist/making-mirrors-linux-amd64 -ldflags "-X main.version=$(shell cat VERSION)"
-	GOOS=linux GOARCH=arm64 go build -o dist/making-mirrors-linux-arm64 -ldflags "-X main.version=$(shell cat VERSION)"
-	GOOS=darwin GOARCH=amd64 go build -o dist/making-mirrors-darwin-amd64 -ldflags "-X main.version=$(shell cat VERSION)"
-	GOOS=darwin GOARCH=arm64 go build -o dist/making-mirrors-darwin-arm64 -ldflags "-X main.version=$(shell cat VERSION)"
+	GOOS=linux GOARCH=amd64 go build -o dist/making-mirrors-x86_64-linux -ldflags "-X main.version=$(shell cat VERSION)"
+	GOOS=linux GOARCH=arm64 go build -o dist/making-mirrors-aarch64-linux -ldflags "-X main.version=$(shell cat VERSION)"
+	GOOS=darwin GOARCH=amd64 go build -o dist/making-mirrors-x86_64-darwin -ldflags "-X main.version=$(shell cat VERSION)"
+	GOOS=darwin GOARCH=arm64 go build -o dist/making-mirrors-aarch64-darwin -ldflags "-X main.version=$(shell cat VERSION)"
 	GOOS=windows GOARCH=amd64 go build -o dist/making-mirrors-windows-amd64.exe -ldflags "-X main.version=$(shell cat VERSION)"
 
 	# Create checksums
