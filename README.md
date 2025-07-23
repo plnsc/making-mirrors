@@ -23,29 +23,29 @@ A Go command-line application for creating and maintaining mirrors of Git reposi
 
 ### Installation
 
-#### Option 1: Install with Go
+#### Option 1: Download Pre-built Binary
+
+Download the latest release from the [releases page](https://github.com/plnsc/making-mirrors/releases).
+
+#### Option 2: Install with Go
 
 ```bash
 go install github.com/plnsc/making-mirrors@latest
 ```
 
-#### Option 2: Using Nix
+#### Option 3: Using Nix
 
 ```bash
 nix run github:plnsc/making-mirrors
 ```
 
-#### Option 3: Build from Source
+#### Option 4: Build from Source
 
 ```bash
 git clone https://github.com/plnsc/making-mirrors.git
 cd making-mirrors
 go build
 ```
-
-#### Option 4: Download Pre-built Binary
-
-Download the latest release from the [releases page](https://github.com/plnsc/making-mirrors/releases).
 
 ### Basic Usage
 

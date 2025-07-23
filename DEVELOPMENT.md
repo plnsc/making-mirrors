@@ -6,7 +6,7 @@ This document contains development-specific information for the making-mirrors p
 
 ### Requirements
 
-- Go 1.21 or later
+- Go 1.22 or later
 - Git (for testing repository operations)
 - Make (optional, for using Makefile commands)
 - Nix (optional, for reproducible builds)
@@ -223,7 +223,7 @@ making-mirrors/
 
 ### Build Issues
 
-- Ensure Go 1.21+ is installed
+- Ensure Go 1.22+ is installed
 - Run `go mod download` to fetch dependencies
 - Check that Git is available in PATH
 
