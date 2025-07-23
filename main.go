@@ -30,13 +30,15 @@ func main() {
 	var mirrorsDir = flag.String("output", "$HOME/Code/mirrors", "Directory to store mirrors")
 	flag.Parse()
 
-	// Use the CLI flag value (with default if not provided)
+	// Use the CLI flag values (with defaults if not provided)
 	finalMirrorsDir := *mirrorsDir
+	finalRegistryFile := *registryFile
 
 	// Expand environment variables and tilde (~) to full paths
 	finalMirrorsDir = expandPath(finalMirrorsDir)
+	finalRegistryFile = expandPath(finalRegistryFile)
 	fmt.Printf("Output directory: %s\n", finalMirrorsDir)
-	fmt.Printf("Registry file: %s\n", *registryFile)
+	fmt.Printf("Registry file: %s\n", finalRegistryFile)
 
 	// Create mirrors directory if it doesn't exist
 	if err := os.MkdirAll(finalMirrorsDir, 0755); err != nil {
@@ -44,7 +46,7 @@ func main() {
 	}
 
 	// Read repositories from registry file
-	repos, err := readRegistry(*registryFile)
+	repos, err := readRegistry(finalRegistryFile)
 	if err != nil {
 		log.Fatalf("Failed to read registry: %v", err)
 	}
