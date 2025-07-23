@@ -173,153 +173,7 @@ mirrors/
 
 ## Development
 
-### Using Make
-
-The project includes a comprehensive Makefile for development and release management:
-
-```bash
-# Available targets
-make help          # Show available commands
-make build         # Build the application
-make test          # Run tests
-make clean         # Clean build artifacts
-make fmt           # Format code
-make lint          # Run linter
-make release       # Create cross-platform release
-make set-version   # Set version across all files
-```
-
-#### Version Management
-
-Update version across all files with a single command:
-
-```bash
-make set-version VERSION=1.2.3
-```
-
-This automatically updates:
-
-- `VERSION` file
-- `main.go` AppVersion constant
-- `flake.nix` version field
-- `main_test.go` test expectations
-
-#### Cross-Platform Release
-
-Create a complete release with binaries for all platforms:
-
-```bash
-make release
-```
-
-This generates:
-
-- Binaries for Linux, macOS, and Windows (x86_64 and ARM64)
-- SHA256 checksums for all binaries
-- Compressed tarball with all artifacts
-
-### Building from Source
-
-```bash
-git clone https://github.com/plnsc/making-mirrors.git
-cd making-mirrors
-go mod download
-go build
-```
-
-### Running Tests
-
-```bash
-go test ./...
-```
-
-### Using with Nix (Optional)
-
-If you prefer using Nix for development:
-
-#### Enter Development Environment
-
-```bash
-nix develop
-```
-
-#### Build with Nix
-
-```bash
-nix build
-```
-
-#### Run with Nix
-
-```bash
-nix run
-```
-
-#### Nix Release System
-
-Create cross-platform releases using Nix:
-
-```bash
-nix run .#release
-```
-
-The Nix release system provides:
-
-- Reproducible builds in a clean sandbox
-- Automatic dependency management
-- Cross-compilation for all supported platforms
-- Identical output to the Makefile release system
-
-### Cross-Platform Builds
-
-#### Automated Release (Recommended)
-
-Use the built-in release systems for complete cross-platform builds:
-
-```bash
-# Using Make (creates dist/ directory with all platforms)
-make release
-
-# Using Nix (creates result-release/ symlink with all platforms)
-nix run .#release
-```
-
-Both methods create binaries for:
-
-- Linux (x86_64, aarch64)
-- macOS (x86_64, aarch64)
-- Windows (x86_64, aarch64)
-
-Plus checksums and compressed archives.
-
-#### Manual Cross-Compilation
-
-If you need individual platform builds:
-
-##### Using Go
-
-```bash
-# Linux
-GOOS=linux GOARCH=amd64 go build -o making-mirrors-linux-amd64
-
-# Windows
-GOOS=windows GOARCH=amd64 go build -o making-mirrors-windows-amd64.exe
-
-# macOS (Intel)
-GOOS=darwin GOARCH=amd64 go build -o making-mirrors-darwin-amd64
-
-# macOS (Apple Silicon)
-GOOS=darwin GOARCH=arm64 go build -o making-mirrors-darwin-arm64
-```
-
-##### Using Nix
-
-```bash
-nix build .#packages.x86_64-linux.default    # Intel/AMD Linux
-nix build .#packages.aarch64-linux.default   # ARM64 Linux
-nix build .#packages.x86_64-darwin.default   # Intel Mac
-nix build .#packages.aarch64-darwin.default  # Apple Silicon Mac
-```
+For development instructions, build automation, cross-platform compilation, and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Use Cases
 
@@ -342,6 +196,7 @@ making-mirrors/
 ├── Makefile           # Build automation with release targets
 ├── LICENSE.md         # MIT license
 ├── README.md          # This documentation
+├── DEVELOPMENT.md     # Development guide
 ├── CHANGELOG.md       # Version history
 └── VERSION            # Current version (0.0.1-alpha)
 ```
@@ -378,25 +233,6 @@ making-mirrors/
 - Check the repository [issues](https://github.com/plnsc/making-mirrors/issues) for known problems
 - View debug output by running with verbose Git operations
 - Ensure all dependencies (Git, Go) are properly installed
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Make your changes
-4. Add tests for new functionality
-5. Run tests: `go test ./...`
-6. Format code: `go fmt ./...`
-7. Run linting (if available): `golangci-lint run`
-8. Commit changes: `git commit -am 'Add feature'`
-9. Push to branch: `git push origin feature-name`
-10. Create a Pull Request
-
-### Development Requirements
-
-- Go 1.21 or later
-- Git (for testing repository operations)
-- Make (optional, for using Makefile commands)
 
 ## License
 
