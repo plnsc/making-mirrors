@@ -184,23 +184,23 @@ func cloneRepository(workerID int, mirrorsDir string, repo Repository) string {
 
 	// Create parent directory
 	if err := os.MkdirAll(filepath.Dir(repoDir), 0755); err != nil {
-		return fmt.Sprintf("✗ [Worker %d] %s/%s: Failed to create directory: %v", workerID, repo.Owner, repo.Name, err)
+		return fmt.Sprintf("✗ %s/%s: Failed to create directory: %v", repo.Owner, repo.Name, err)
 	}
 
 	// Clone the repository
 	cmd := exec.Command("git", "clone", "--mirror", repo.URL, repoDir)
 	if err := cmd.Run(); err != nil {
-		return fmt.Sprintf("✗ [Worker %d] %s/%s: Clone failed: %v", workerID, repo.Owner, repo.Name, err)
+		return fmt.Sprintf("✗ %s/%s: Clone failed: %v", repo.Owner, repo.Name, err)
 	}
 
-	return fmt.Sprintf("✓ [Worker %d] %s/%s: Cloned successfully", workerID, repo.Owner, repo.Name)
+	return fmt.Sprintf("✓ %s/%s: Cloned successfully", repo.Owner, repo.Name)
 }
 
 func pullRepository(workerID int, repoDir string, repo Repository) string {
 	// First, try a normal remote update
 	cmd := exec.Command("git", "-C", repoDir, "remote", "update")
 	if err := cmd.Run(); err != nil {
-		return fmt.Sprintf("✗ [Worker %d] %s/%s: Remote update failed: %v", workerID, repo.Owner, repo.Name, err)
+		return fmt.Sprintf("✗ %s/%s: Remote update failed: %v", repo.Owner, repo.Name, err)
 	}
 
 	// Check if there are divergent changes (force push scenario)
@@ -208,7 +208,7 @@ func pullRepository(workerID int, repoDir string, repo Repository) string {
 	output, err := cmd.Output()
 	if err != nil {
 		// If we can't check divergence, proceed with normal update
-		return fmt.Sprintf("✓ [Worker %d] %s/%s: Updated successfully", workerID, repo.Owner, repo.Name)
+		return fmt.Sprintf("✓ %s/%s: Updated successfully", repo.Owner, repo.Name)
 	}
 
 	divergenceInfo := strings.TrimSpace(string(output))
@@ -219,7 +219,7 @@ func pullRepository(workerID int, repoDir string, repo Repository) string {
 		return handleForcePush(workerID, repoDir, repo)
 	}
 
-	return fmt.Sprintf("✓ [Worker %d] %s/%s: Updated successfully", workerID, repo.Owner, repo.Name)
+	return fmt.Sprintf("✓ %s/%s: Updated successfully", repo.Owner, repo.Name)
 }
 
 func handleForcePush(workerID int, repoDir string, repo Repository) string {
@@ -230,7 +230,7 @@ func handleForcePush(workerID int, repoDir string, repo Repository) string {
 	// Create backup of current state
 	cmd := exec.Command("cp", "-r", repoDir, backupDir)
 	if err := cmd.Run(); err != nil {
-		return fmt.Sprintf("✗ [Worker %d] %s/%s: Backup failed: %v", workerID, repo.Owner, repo.Name, err)
+		return fmt.Sprintf("✗ %s/%s: Backup failed: %v", repo.Owner, repo.Name, err)
 	}
 
 	// Reset to match remote (accept force push)
@@ -241,8 +241,8 @@ func handleForcePush(workerID int, repoDir string, repo Repository) string {
 		restoreCmd.Run()
 		restoreCmd = exec.Command("mv", backupDir, repoDir)
 		restoreCmd.Run()
-		return fmt.Sprintf("✗ [Worker %d] %s/%s: Force push handling failed: %v", workerID, repo.Owner, repo.Name, err)
+		return fmt.Sprintf("✗ %s/%s: Force push handling failed: %v", repo.Owner, repo.Name, err)
 	}
 
-	return fmt.Sprintf("✓ [Worker %d] %s/%s: Updated (force push detected, backed up to %s)", workerID, repo.Owner, repo.Name, filepath.Base(backupDir))
+	return fmt.Sprintf("✓ %s/%s: Updated (force push detected, backed up to %s)", repo.Owner, repo.Name, filepath.Base(backupDir))
 }
