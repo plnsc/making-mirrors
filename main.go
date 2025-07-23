@@ -45,7 +45,7 @@ const (
 	AppName = "making-mirrors"
 
 	// AppVersion is the current version of the application
-	AppVersion = "0.1.0"
+	AppVersion = "0.0.1-alpha"
 
 	// AppDescription is a brief description of what the application does
 	AppDescription = "A Go application for creating mirrors of Git repositories"

@@ -16,7 +16,7 @@ func TestAppMetadata(t *testing.T) {
 		expected string
 	}{
 		{"AppName", AppName, "making-mirrors"},
-		{"AppVersion", AppVersion, "0.1.0"},
+		{"AppVersion", AppVersion, "0.0.1-alpha"},
 		{"AppAuthor", AppAuthor, "Paulo Nascimento <paulornasc@gmail>"},
 		{"AppLicense", AppLicense, "MIT"},
 	}
@@ -42,10 +42,10 @@ func TestDefaultPaths(t *testing.T) {
 
 func TestBuildInfo(t *testing.T) {
 	info := BuildInfo{
-		Version:   "0.1.0",
+		Version:   "0.0.1-alpha",
 		GitCommit: "abc123",
 		BuildTime: "2025-07-23",
-		GoVersion: "1.22",
+		GoVersion:   "0.0.1-alpha",
 	}
 
 	if info.Version == "" {
@@ -701,14 +701,14 @@ func TestReadRegistryMalformed(t *testing.T) {
 func TestBuildInfoStruct(t *testing.T) {
 	t.Run("BuildInfo with all fields", func(t *testing.T) {
 		info := BuildInfo{
-			Version:   "1.0.0",
+			Version:   "0.0.1-alpha",
 			GitCommit: "abc123def",
 			BuildTime: "2025-07-23T10:00:00Z",
-			GoVersion: "go1.22.0",
+			GoVersion:   "0.0.1-alpha",
 		}
 
-		if info.Version != "1.0.0" {
-			t.Errorf("Version = %q, want %q", info.Version, "1.0.0")
+		if info.Version != "0.0.1-alpha" {
+			t.Errorf(".0.1-alpha")
 		}
 		if info.GitCommit != "abc123def" {
 			t.Errorf("GitCommit = %q, want %q", info.GitCommit, "abc123def")
@@ -724,7 +724,7 @@ func TestBuildInfoStruct(t *testing.T) {
 	t.Run("zero value BuildInfo", func(t *testing.T) {
 		var info BuildInfo
 
-		if info.Version != "" {
+		if info.Version != "0.0.1-alpha" {
 			t.Errorf("Zero value Version should be empty, got %q", info.Version)
 		}
 		if info.GitCommit != "" {

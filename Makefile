@@ -1,18 +1,19 @@
 # Makefile for making-mirrors
-.PHONY: help build test clean fmt lint nix-build nix-run install release
+.PHONY: help build test clean fmt lint nix-build nix-run install release set-version
 
 # Default target
 help:
 	@echo "Available targets:"
-	@echo "  build     - Build the application with Go"
-	@echo "  test      - Run tests"
-	@echo "  clean     - Clean build artifacts"
-	@echo "  fmt       - Format code"
-	@echo "  lint      - Run linter"
-	@echo "  nix-build - Build with Nix"
-	@echo "  nix-run   - Run with Nix"
-	@echo "  install   - Install globally with Nix"
-	@echo "  release   - Create a release with cross-platform builds"
+	@echo "  build       - Build the application with Go"
+	@echo "  test        - Run tests"
+	@echo "  clean       - Clean build artifacts"
+	@echo "  fmt         - Format code"
+	@echo "  lint        - Run linter"
+	@echo "  nix-build   - Build with Nix"
+	@echo "  nix-run     - Run with Nix"
+	@echo "  install     - Install globally with Nix"
+	@echo "  release     - Create a release with cross-platform builds"
+	@echo "  set-version - Set version in all files (usage: make set-version VERSION=x.y.z)"
 
 # Build with Go
 build:
@@ -55,6 +56,36 @@ dev:
 # Show version
 version:
 	@echo "making-mirrors v$(shell cat VERSION)"
+
+# Set version in all places (usage: make set-version VERSION=x.y.z)
+set-version:
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Error: VERSION is required. Usage: make set-version VERSION=x.y.z"; \
+		exit 1; \
+	fi
+	@echo "Setting version to $(VERSION) in all files..."
+	
+	# Update VERSION file
+	echo "$(VERSION)" > VERSION
+	
+	# Update version in main.go using perl for better regex handling
+	perl -i -pe 's/AppVersion = "[^"]*"/AppVersion = "$(VERSION)"/' main.go
+	
+	# Update version in flake.nix
+	perl -i -pe 's/version = "[^"]*";/version = "$(VERSION)";/' flake.nix
+	
+	# Update version in main_test.go
+	perl -i -pe 's/\{"AppVersion", AppVersion, "[^"]*"\}/{"AppVersion", AppVersion, "$(VERSION)"}/' main_test.go
+	perl -i -pe 's/Version:\s+"[^"]*",/Version:   "$(VERSION)",/' main_test.go
+	perl -i -pe 's/info\.Version != "[^"]*"/info.Version != "$(VERSION)"/' main_test.go
+	perl -i -pe 's/(Version = %q, want %q", info\.Version, ")[^"]*"/$$1$(VERSION)"/' main_test.go
+	
+	@echo "Version $(VERSION) has been set in all files"
+	@echo "Updated files:"
+	@echo "  - VERSION"
+	@echo "  - main.go"
+	@echo "  - flake.nix"
+	@echo "  - main_test.go"
 
 # Create a release with cross-platform builds
 release: clean test
