@@ -27,6 +27,7 @@ This document contains development-specific information for the making-mirrors p
    ```
 
 3. Run tests:
+
    ```bash
    go test ./...
    ```
