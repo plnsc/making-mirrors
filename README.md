@@ -80,7 +80,7 @@ provider:owner/repository
 Supported providers:
 
 - `github` - GitHub repositories
-- `gitlab` - GitLab repositories  
+- `gitlab` - GitLab repositories
 - `bitbucket` - Bitbucket repositories
 
 Example registry file:
@@ -217,7 +217,7 @@ nix run
 # Linux
 GOOS=linux GOARCH=amd64 go build -o making-mirrors-linux-amd64
 
-# Windows  
+# Windows
 GOOS=windows GOARCH=amd64 go build -o making-mirrors-windows-amd64.exe
 
 # macOS (Intel)
@@ -231,7 +231,7 @@ GOOS=darwin GOARCH=arm64 go build -o making-mirrors-darwin-arm64
 
 ```bash
 nix build .#packages.x86_64-linux.default    # Intel/AMD Linux
-nix build .#packages.aarch64-linux.default   # ARM64 Linux  
+nix build .#packages.aarch64-linux.default   # ARM64 Linux
 nix build .#packages.x86_64-darwin.default   # Intel Mac
 nix build .#packages.aarch64-darwin.default  # Apple Silicon Mac
 ```
@@ -250,7 +250,7 @@ nix build .#packages.aarch64-darwin.default  # Apple Silicon Mac
 making-mirrors/
 ├── main.go            # Main application code
 ├── main_test.go       # Tests
-├── go.mod             # Go module definition  
+├── go.mod             # Go module definition
 ├── go.sum             # Go module checksums
 ├── flake.nix          # Nix flake configuration (optional)
 ├── flake.lock         # Nix dependencies (optional)
