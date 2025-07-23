@@ -172,6 +172,51 @@ mirrors/
 
 ## Development
 
+### Using Make
+
+The project includes a comprehensive Makefile for development and release management:
+
+```bash
+# Available targets
+make help          # Show available commands
+make build         # Build the application
+make test          # Run tests
+make clean         # Clean build artifacts
+make fmt           # Format code
+make lint          # Run linter
+make release       # Create cross-platform release
+make set-version   # Set version across all files
+```
+
+#### Version Management
+
+Update version across all files with a single command:
+
+```bash
+make set-version VERSION=1.2.3
+```
+
+This automatically updates:
+
+- `VERSION` file
+- `main.go` AppVersion constant
+- `flake.nix` version field
+- `main_test.go` test expectations
+
+#### Cross-Platform Release
+
+Create a complete release with binaries for all platforms:
+
+```bash
+make release
+```
+
+This generates:
+
+- Binaries for Linux, macOS, and Windows (x86_64 and ARM64)
+- SHA256 checksums for all binaries
+- Compressed tarball with all artifacts
+
 ### Building from Source
 
 ```bash
@@ -209,9 +254,48 @@ nix build
 nix run
 ```
 
+#### Nix Release System
+
+Create cross-platform releases using Nix:
+
+```bash
+nix run .#release
+```
+
+The Nix release system provides:
+
+- Reproducible builds in a clean sandbox
+- Automatic dependency management
+- Cross-compilation for all supported platforms
+- Identical output to the Makefile release system
+
 ### Cross-Platform Builds
 
-#### Using Go
+#### Automated Release (Recommended)
+
+Use the built-in release systems for complete cross-platform builds:
+
+```bash
+# Using Make (creates dist/ directory with all platforms)
+make release
+
+# Using Nix (creates result-release/ symlink with all platforms)
+nix run .#release
+```
+
+Both methods create binaries for:
+
+- Linux (x86_64, aarch64)
+- macOS (x86_64, aarch64)
+- Windows (x86_64, aarch64)
+
+Plus checksums and compressed archives.
+
+#### Manual Cross-Compilation
+
+If you need individual platform builds:
+
+##### Using Go
 
 ```bash
 # Linux
@@ -227,7 +311,7 @@ GOOS=darwin GOARCH=amd64 go build -o making-mirrors-darwin-amd64
 GOOS=darwin GOARCH=arm64 go build -o making-mirrors-darwin-arm64
 ```
 
-#### Using Nix
+##### Using Nix
 
 ```bash
 nix build .#packages.x86_64-linux.default    # Intel/AMD Linux
@@ -252,13 +336,13 @@ making-mirrors/
 ├── main_test.go       # Tests
 ├── go.mod             # Go module definition
 ├── go.sum             # Go module checksums
-├── flake.nix          # Nix flake configuration (optional)
-├── flake.lock         # Nix dependencies (optional)
-├── Makefile           # Build automation
+├── flake.nix          # Nix flake configuration with release system
+├── flake.lock         # Nix dependencies
+├── Makefile           # Build automation with release targets
 ├── LICENSE.md         # MIT license
 ├── README.md          # This documentation
 ├── CHANGELOG.md       # Version history
-└── VERSION            # Current version
+└── VERSION            # Current version (0.0.1-alpha)
 ```
 
 ## Performance
