@@ -11,7 +11,6 @@ import (
 	"runtime"
 	"strings"
 	"sync"
-	"time"
 )
 
 type Repository struct {
@@ -221,52 +220,51 @@ func cloneRepository(workerID int, mirrorsDir string, repo Repository) string {
 }
 
 func pullRepository(workerID int, repoDir string, repo Repository) string {
-	// First, try a normal remote update
+	// Get the current state of refs before update
+	beforeCmd := exec.Command("git", "-C", repoDir, "show-ref")
+	beforeOutput, beforeErr := beforeCmd.Output()
+
+	// Perform remote update
 	cmd := exec.Command("git", "-C", repoDir, "remote", "update")
 	if err := cmd.Run(); err != nil {
 		return fmt.Sprintf("✗ %s/%s: Remote update failed: %v", repo.Owner, repo.Name, err)
 	}
 
-	// Check if there are divergent changes (force push scenario)
-	cmd = exec.Command("git", "-C", repoDir, "rev-list", "--count", "--left-right", "HEAD...origin/HEAD")
-	output, err := cmd.Output()
-	if err != nil {
-		// If we can't check divergence, proceed with normal update
+	// Get the state of refs after update
+	afterCmd := exec.Command("git", "-C", repoDir, "show-ref")
+	afterOutput, afterErr := afterCmd.Output()
+
+	// If we couldn't get refs info, assume update was successful
+	if beforeErr != nil || afterErr != nil {
 		return fmt.Sprintf("✓ %s/%s: Updated successfully", repo.Owner, repo.Name)
 	}
 
-	divergenceInfo := strings.TrimSpace(string(output))
-	parts := strings.Fields(divergenceInfo)
+	// Compare before and after refs to see if anything changed
+	beforeRefs := strings.TrimSpace(string(beforeOutput))
+	afterRefs := strings.TrimSpace(string(afterOutput))
 
-	// If there are commits on both sides (divergence), handle force push
-	if len(parts) == 2 && parts[0] != "0" && parts[1] != "0" {
-		return handleForcePush(workerID, repoDir, repo)
+	if beforeRefs == afterRefs {
+		return fmt.Sprintf("✓ %s/%s: Already up to date", repo.Owner, repo.Name)
+	}
+
+	// Check if this might be a force push by looking for shortened ref lists
+	// (indicating some refs were updated/overwritten)
+	beforeLines := strings.Split(beforeRefs, "\n")
+	afterLines := strings.Split(afterRefs, "\n")
+
+	// If we have significantly different number of refs, it might be a complex update
+	if len(beforeLines) > 0 && len(afterLines) > 0 &&
+		abs(len(beforeLines)-len(afterLines)) > len(beforeLines)/10 {
+		return fmt.Sprintf("✓ %s/%s: Updated (significant changes detected)", repo.Owner, repo.Name)
 	}
 
 	return fmt.Sprintf("✓ %s/%s: Updated successfully", repo.Owner, repo.Name)
 }
 
-func handleForcePush(workerID int, repoDir string, repo Repository) string {
-	// Create backup directory with timestamp
-	timestamp := time.Now().Format("20060102-150405")
-	backupDir := filepath.Join(filepath.Dir(repoDir), fmt.Sprintf("%s.backup.%s", filepath.Base(repoDir), timestamp))
-
-	// Create backup of current state
-	cmd := exec.Command("cp", "-r", repoDir, backupDir)
-	if err := cmd.Run(); err != nil {
-		return fmt.Sprintf("✗ %s/%s: Backup failed: %v", repo.Owner, repo.Name, err)
+// Helper function to calculate absolute difference
+func abs(x int) int {
+	if x < 0 {
+		return -x
 	}
-
-	// Reset to match remote (accept force push)
-	cmd = exec.Command("git", "-C", repoDir, "reset", "--hard", "origin/HEAD")
-	if err := cmd.Run(); err != nil {
-		// If reset fails, try to restore from backup
-		restoreCmd := exec.Command("rm", "-rf", repoDir)
-		restoreCmd.Run()
-		restoreCmd = exec.Command("mv", backupDir, repoDir)
-		restoreCmd.Run()
-		return fmt.Sprintf("✗ %s/%s: Force push handling failed: %v", repo.Owner, repo.Name, err)
-	}
-
-	return fmt.Sprintf("✓ %s/%s: Updated (force push detected, backed up to %s)", repo.Owner, repo.Name, filepath.Base(backupDir))
+	return x
 }
