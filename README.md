@@ -2,7 +2,7 @@
 
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
-A Go application for creating mirrors of Git repositories, built and managed with Nix flakes.
+A Go application for creating mirrors of Git repositories, built and managed with Nix flakes. This flake is designed to be easily used as an input in other Nix projects.
 
 ## Prerequisites
 
@@ -10,6 +10,34 @@ A Go application for creating mirrors of Git repositories, built and managed wit
 - On macOS: Ensure you have the latest Nix with flakes support
 
 ## Quick Start
+
+### Using as a Flake Input
+
+To use this project in another Nix flake:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    making-mirrors.url = "github:plnsc/making-mirrors";
+  };
+
+  outputs = { nixpkgs, making-mirrors, ... }: {
+    # Option 1: Use the package directly
+    packages.x86_64-linux.my-package = making-mirrors.packages.x86_64-linux.default;
+
+    # Option 2: Use the overlay
+    packages.x86_64-linux.my-env = let
+      pkgs = import nixpkgs {
+        system = "x86_64-linux";
+        overlays = [ making-mirrors.overlays.default ];
+      };
+    in pkgs.making-mirrors;
+  };
+}
+```
+
+### Local Development
 
 ### 1. Enter the Development Environment
 
@@ -99,7 +127,21 @@ The built binary will be available at `./result/bin/making-mirrors`
 
 ### Build for Different Targets
 
-The Nix flake currently targets `x86_64-darwin` (Intel Mac). To build for other systems, modify the `system` variable in `flake.nix`.
+The Nix flake supports multiple systems:
+
+- `x86_64-linux` (Intel/AMD Linux)
+- `aarch64-linux` (ARM64 Linux)
+- `x86_64-darwin` (Intel Mac)
+- `aarch64-darwin` (Apple Silicon Mac)
+
+To build for a specific system:
+
+```bash
+nix build .#packages.x86_64-linux.default    # Build for Intel/AMD Linux
+nix build .#packages.aarch64-linux.default   # Build for ARM64 Linux
+nix build .#packages.x86_64-darwin.default   # Build for Intel Mac
+nix build .#packages.aarch64-darwin.default  # Build for Apple Silicon Mac
+```
 
 You can also use Go's built-in cross-compilation:
 
