@@ -243,7 +243,6 @@ func parseRepositoryLine(line string) (Repository, error) {
 	case "gitea":
 		url = fmt.Sprintf("https://gitea.com/%s/%s.git", owner, name)
 	case "codecommit":
-		// AWS CodeCommit format: codecommit:region/account/repo
 		awsParts := strings.Split(owner, "-")
 		if len(awsParts) == 2 {
 			region := awsParts[1]
@@ -252,7 +251,6 @@ func parseRepositoryLine(line string) (Repository, error) {
 			url = fmt.Sprintf("https://git-codecommit.%s.amazonaws.com/v1/repos/%s", owner, name)
 		}
 	case "azure":
-		// Azure Repos format: azure:org/project/repo
 		url = fmt.Sprintf("https://dev.azure.com/%s/%s/_git/%s", owner, name, name)
 	default:
 		return Repository{}, fmt.Errorf("unsupported provider: %s", provider)
