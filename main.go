@@ -147,14 +147,14 @@ func main() {
 		close(repoChan)
 	}()
 
-	// Collect results
+	// Wait for all workers to finish and close the result channel
 	go func() {
 		wg.Wait()
 		close(resultChan)
 	}()
 
-	// Print results
-	fmt.Println("\nMirroring progress:")
+	// Collect results from workers
+	fmt.Println("\nMirroring repositories...")
 	successCount := 0
 	for result := range resultChan {
 		fmt.Println(result)
