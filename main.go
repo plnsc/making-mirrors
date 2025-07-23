@@ -22,7 +22,7 @@
 //
 //	making-mirrors -input ./repos.txt -output ./mirrors
 //
-// Author: Paulo Nascimento <paulornasc@gmail>
+// Author: Paulo Nascimento <paulornasc@gmail.com>
 // License: MIT
 package main
 
@@ -51,7 +51,7 @@ const (
 	AppDescription = "A Go application for creating mirrors of Git repositories"
 
 	// AppAuthor is the author of the application
-	AppAuthor = "Paulo Nascimento <paulornasc@gmail>"
+	AppAuthor = "Paulo Nascimento <paulornasc@gmail.com>"
 
 	// AppLicense is the license under which the application is distributed
 	AppLicense = "MIT"
@@ -134,7 +134,7 @@ func main() {
 
 	// Start workers
 	var wg sync.WaitGroup
-	for range numWorkers {
+	for i := 0; i < numWorkers; i++ {
 		wg.Add(1)
 		go worker(finalMirrorsDir, repoChan, resultChan, &wg)
 	}
