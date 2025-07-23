@@ -4,50 +4,31 @@
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     };
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
   outputs =
     inputs@{
       self,
       nixpkgs,
-      rust-overlay,
       ...
     }:
     let
       system = "x86_64-darwin";
-      overlays = [ (import rust-overlay) ];
-      pkgs = import nixpkgs { inherit system overlays; };
+      pkgs = import nixpkgs { inherit system; };
 
-      # Rust toolchain
-      rustToolchain = pkgs.rust-bin.stable.latest.default.override {
-        extensions = [
-          "rust-src"
-          "clippy"
-          "rustfmt"
-        ];
-      };
-
-      # Build the Rust package
-      makingMirrors = pkgs.rustPlatform.buildRustPackage {
+      # Build the Go package
+      makingMirrors = pkgs.buildGoModule {
         pname = "making-mirrors";
         version = "0.1.0";
         src = ./.;
 
-        cargoHash = "sha256-k1I6R35GaiICuWfypFyuY5cMMKlpUMFR1pJVL9HyKXA=";
+        vendorHash = null; # No dependencies yet
 
-        nativeBuildInputs = with pkgs; [
-          rustToolchain
-        ];
-
-        buildInputs =
-          with pkgs;
-          lib.optionals stdenv.isDarwin [
-            libiconv
-          ];
-
+        # Ensure the binary is named correctly
+        subPackages = [ "." ];
+        
+        # Build flags
+        ldflags = [ "-s" "-w" ];
+        
         meta = with pkgs.lib; {
           description = "Making Mirrors for Git Repositories";
           license = licenses.mit;
@@ -66,31 +47,24 @@
       devShells.${system}.default = pkgs.mkShell {
         name = "making-mirrors-dev-shell";
         packages = with pkgs; [
-          # Rust toolchain
-          rustToolchain
+          # Go toolchain
+          go
 
           # Development tools
-          cargo-watch
-          cargo-edit
-          rust-analyzer
-
-          # Build tools
-          pkg-config
+          gopls
+          golangci-lint
+          gotools
+          air # Live reload for Go apps
         ];
 
-        buildInputs =
-          with pkgs;
-          lib.optionals stdenv.isDarwin [
-            libiconv
-          ];
-
         shellHook = ''
-          echo "🦀 Rust development environment loaded!"
+          echo "🐹 Go development environment loaded!"
           echo "Available commands:"
-          echo "  cargo build    - Build the project"
-          echo "  cargo run      - Run the project"
-          echo "  cargo test     - Run tests"
-          echo "  cargo watch -x run - Auto-rebuild on changes"
+          echo "  go build       - Build the project"
+          echo "  go run .       - Run the project"
+          echo "  go test        - Run tests"
+          echo "  go mod tidy    - Tidy up dependencies"
+          echo "  air            - Live reload development server"
           echo ""
         '';
       };

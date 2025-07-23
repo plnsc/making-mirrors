@@ -2,7 +2,7 @@
 
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
-A Rust application for creating mirrors of Git repositories, built and managed with Nix flakes.
+A Go application for creating mirrors of Git repositories, built and managed with Nix flakes.
 
 ## Prerequisites
 
@@ -19,8 +19,8 @@ nix develop
 
 This will:
 
-- Install the Rust toolchain (latest stable)
-- Provide development tools (cargo-watch, cargo-edit, rust-analyzer)
+- Install the Go toolchain (latest stable)
+- Provide development tools (gopls, golangci-lint, gotools, air)
 - Set up the shell with helpful commands
 
 ### 2. Build the Application
@@ -31,10 +31,10 @@ Using Nix (recommended for production builds):
 nix build
 ```
 
-Using Cargo (for development):
+Using Go (for development):
 
 ```bash
-cargo build
+go build
 ```
 
 ### 3. Run the Application
@@ -45,10 +45,10 @@ Using Nix:
 nix run
 ```
 
-Using Cargo (in development shell):
+Using Go (in development shell):
 
 ```bash
-cargo run
+go run .
 ```
 
 ## Development Workflow
@@ -61,30 +61,30 @@ nix develop
 
 Once in the development shell, you have access to:
 
-### Basic Cargo Commands
+### Basic Go Commands
 
 ```bash
-cargo build          # Build the project
-cargo run            # Run the project
-cargo test           # Run tests
-cargo check          # Check for errors without building
-cargo clippy         # Run linting
-cargo fmt            # Format code
+go build            # Build the project
+go run .            # Run the project
+go test             # Run tests
+go mod tidy         # Clean up dependencies
+go fmt              # Format code
+go vet              # Examine code for issues
 ```
 
 ### Development Tools
 
 ```bash
-cargo watch -x run   # Auto-rebuild and run on file changes
-cargo watch -x test  # Auto-run tests on changes
-cargo edit           # Add/remove dependencies easily
+air                 # Live reload development server
+golangci-lint run   # Run comprehensive linting
+gopls               # Language server (integrated with editors)
 ```
 
 ### Example: Adding Dependencies
 
 ```bash
-cargo add serde      # Add serde dependency
-cargo add --dev tokio-test  # Add development dependency
+go get github.com/gin-gonic/gin  # Add a dependency
+go mod tidy                      # Clean up go.mod and go.sum
 ```
 
 ## Building and Distribution
@@ -101,6 +101,13 @@ The built binary will be available at `./result/bin/making-mirrors`
 
 The Nix flake currently targets `x86_64-darwin` (Intel Mac). To build for other systems, modify the `system` variable in `flake.nix`.
 
+You can also use Go's built-in cross-compilation:
+
+```bash
+GOOS=linux GOARCH=amd64 go build .     # Build for Linux
+GOOS=windows GOARCH=amd64 go build .   # Build for Windows
+```
+
 ### Install Globally
 
 ```bash
@@ -113,10 +120,9 @@ nix profile install .
 making-mirrors/
 ├── flake.nix          # Nix flake configuration
 ├── flake.lock         # Locked dependencies
-├── Cargo.toml         # Rust package manifest
-├── Cargo.lock         # Locked Rust dependencies
-├── src/
-│   └── main.rs        # Main application code
+├── go.mod             # Go module definition
+├── go.sum             # Go module checksums (auto-generated)
+├── main.go            # Main application code
 ├── .gitignore         # Git ignore rules
 └── README.md          # This file
 ```
@@ -125,17 +131,17 @@ making-mirrors/
 
 This flake provides several outputs:
 
-- **`packages.default`**: The built Rust application
+- **`packages.default`**: The built Go application
 - **`packages.making-mirrors`**: Alternative name for the same package
-- **`devShells.default`**: Development environment with Rust toolchain
+- **`devShells.default`**: Development environment with Go toolchain
 - **`apps.default`**: Direct application runner
 
-### Key Improvements
+### Key Features
 
-- ✅ **No Apple SDK warnings**: Uses `libiconv` instead of deprecated framework stubs
-- ✅ **Fixed development shell**: No longer exits unexpectedly
-- ✅ **Correct cargo hash**: Properly configured for the current project
-- ✅ **Clean build**: No deprecation warnings or errors
+- ✅ **Go toolchain**: Latest stable Go compiler and tools
+- ✅ **Development tools**: gopls, golangci-lint, air for live reload
+- ✅ **Cross-platform builds**: Support for multiple architectures
+- ✅ **Clean development environment**: Isolated and reproducible
 
 ### Using Different Outputs
 
@@ -153,11 +159,11 @@ If the development shell exits immediately, this has been fixed in the current v
 
 ### First Build Issues
 
-On the first `nix build`, you may see an error about `cargoHash`. This is expected! Nix will show you the correct hash. Copy it and update the `cargoHash` value in `flake.nix`.
+On the first `nix build`, you may see an error about `vendorHash`. This is expected if you add dependencies! Nix will show you the correct hash. Copy it and update the `vendorHash` value in `flake.nix`.
 
 ### Updating Dependencies
 
-After modifying `Cargo.toml`, you may need to update the `cargoHash` in `flake.nix`:
+After modifying `go.mod`, you may need to update the `vendorHash` in `flake.nix`:
 
 1. Delete the current hash (set it to an empty string or wrong hash)
 2. Run `nix build`
@@ -178,16 +184,16 @@ nix flake lock      # Update lock file
 ## Contributing
 
 1. Make your changes
-2. Test with `cargo test`
-3. Format with `cargo fmt`
-4. Lint with `cargo clippy`
+2. Test with `go test`
+3. Format with `go fmt`
+4. Lint with `golangci-lint run`
 5. Build with `nix build` to ensure Nix compatibility
 6. Test the development shell with `nix develop`
 
 ## What's Working
 
 - ✅ Nix flake builds successfully without warnings
-- ✅ Development shell stays open and provides Rust toolchain
+- ✅ Development shell stays open and provides Go toolchain
 - ✅ Application runs with `nix run`
 - ✅ Clean build process with proper dependencies
 - ✅ macOS compatibility with `libiconv`
