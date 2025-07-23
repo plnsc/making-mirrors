@@ -15,7 +15,6 @@ A Go command-line application for creating and maintaining mirrors of Git reposi
 - **Flexible Configuration**: Customizable input and output directories
 - **Cross-Platform**: Works on Linux, macOS, and Windows
 
-
 ### Registry File Format
 
 The registry file contains one repository per line in the format:
