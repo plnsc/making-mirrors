@@ -7,12 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **Makefile**: Legacy Make build system removed in favor of Nix-only workflow
+- **Make Dependencies**: No longer requires Make to be installed
+
 ### Added
 
-- Initial package documentation and metadata
-- Comprehensive README with usage instructions
-- Nix flake configuration for reproducible builds
-- Development environment with Go toolchain
+- **Nix-based Development Workflow**: Complete migration from Make to Nix for build automation
+- **Nix Apps for All Build Tasks**: All Makefile functions now available as `nix run .#<command>`
+  - `nix run .#build` - Build the application with Go
+  - `nix run .#test` - Run tests
+  - `nix run .#clean` - Clean build artifacts
+  - `nix run .#fmt` - Format code
+  - `nix run .#lint` - Run linter
+  - `nix run .#version` - Show current version
+  - `nix run .#set-version` - Set version in all files
+  - `nix run .#install` - Install globally with Nix
+  - `nix run .#release` - Create cross-platform release
+- **Enhanced Development Shell**: Rich development environment with welcome message and command reference
+- **Migration Documentation**:
+  - `docs/unreleased/MIGRATION.md` - Complete guide for migrating from Make to Nix
+  - `docs/unreleased/MIGRATION_SUMMARY.md` - Detailed summary of changes and benefits
+  - `docs/unreleased/DOCUMENTATION_UPDATE_SUMMARY.md` - Summary of documentation updates
+  - `docs/unreleased/SET_VERSION_FIX.md` - Technical details about set-version implementation fix
+- **Zero External Dependencies**: No longer requires Make to be installed
+
+### Changed
+
+- **Primary Build System**: Nix is now the recommended build system (Make remains for compatibility)
+- **Development Documentation**: Updated `DEVELOPMENT.md` to prioritize Nix workflow
+- **README**: Added migration notes and updated project structure
+- **Development Shell**: Enhanced with comprehensive tool listing and usage instructions
+
+### Improved
+
+- **Reproducible Builds**: Nix ensures consistent builds across different environments
+- **Cross-Platform Consistency**: Identical development experience on Linux, macOS, and Windows (WSL)
+- **Developer Experience**: Integrated toolchain with golangci-lint, air, and Go tools
+- **Documentation**: Clear migration path and command mapping from Make to Nix
+
+### Migration Technical Details
+
+- All Makefile functionality preserved as Nix flake apps
+- Perl-based version management integrated into Nix scripts
+- Development shell includes Go toolchain, linting tools, and live reload
+- Backward compatibility maintained with existing Makefile
 
 ## [0.0.1-alpha] - 2025-07-23
 

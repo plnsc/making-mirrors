@@ -6,10 +6,9 @@ This document contains development-specific information for the making-mirrors p
 
 ### Requirements
 
-- Go 1.22 or later
+- [Nix](https://nixos.org/download.html) with flakes enabled (recommended)
+- Go 1.22 or later (if not using Nix)
 - Git (for testing repository operations)
-- Make (optional, for using Makefile commands)
-- Nix (optional, for reproducible builds)
 
 ### Setting Up
 
@@ -20,23 +19,71 @@ This document contains development-specific information for the making-mirrors p
    cd making-mirrors
    ```
 
-2. Install dependencies:
+2. **Recommended: Use Nix for development:**
 
    ```bash
+   # Enter development shell with all dependencies
+   nix develop
+   ```
+
+3. **Alternative: Manual Go setup:**
+
+   ```bash
+   # Install dependencies manually
    go mod download
    ```
 
-3. Run tests:
+4. Run tests:
 
    ```bash
+   # Using Nix
+   nix run .#test
+
+   # Or using Go directly
    go test ./...
    ```
 
 ## Development Workflow
 
-### Using Make
+### Using Nix (Recommended)
 
-The project includes a comprehensive Makefile for build automation:
+The project has migrated from Make to Nix for improved reproducibility and cross-platform consistency. All previous Make functionality is now available as Nix apps:
+
+```bash
+# Build for current platform
+nix run .#build
+
+# Run tests
+nix run .#test
+
+# Clean build artifacts
+nix run .#clean
+
+# Format code
+nix run .#fmt
+
+# Run linter
+nix run .#lint
+
+# Show version
+nix run .#version
+
+# Set a new version across all files
+nix run .#set-version 1.0.0
+
+# Create release builds for all platforms
+nix run .#release
+
+# Install globally
+nix run .#install
+
+# Enter development shell
+nix develop
+```
+
+### Legacy Make Support
+
+The project includes a comprehensive Makefile for backward compatibility. See [docs/unreleased/MIGRATION.md](docs/unreleased/MIGRATION.md) for the complete command mapping from Make to Nix.
 
 ```bash
 # Build for current platform
@@ -58,12 +105,62 @@ make release
 make help
 ```
 
+## Migration from Make to Nix
+
+### Implementation Details
+
+The migration from Make to Nix was implemented by:
+
+1. **Converting Makefile targets to Nix apps**: Each Make target became a Nix app in `flake.nix`
+2. **Preserving all functionality**: Version management, cross-platform builds, and development workflows
+3. **Enhanced tooling**: Added golangci-lint, air, and other development tools to the Nix environment
+4. **Improved error handling**: Better error messages and path resolution in Nix scripts
+
+### Benefits Achieved
+
+- **Reproducible Builds**: Nix ensures identical builds across different machines and environments
+- **Zero External Dependencies**: No need for Make, Perl, or other system tools to be pre-installed
+- **Cross-Platform Consistency**: Same development experience on Linux, macOS, and Windows (WSL)
+- **Integrated Development Environment**: All tools available in a single `nix develop` command
+- **Better Caching**: Nix's content-addressed storage provides efficient build caching
+- **Atomic Operations**: Nix ensures builds either complete successfully or fail cleanly
+
+### Migration Strategy
+
+The migration maintains full backward compatibility:
+
+1. **Dual Support**: Both Make and Nix commands work simultaneously
+2. **Gradual Migration**: Teams can adopt Nix incrementally
+3. **Documentation**: Complete migration guide in `docs/unreleased/MIGRATION.md`
+4. **Command Mapping**: One-to-one mapping between Make and Nix commands
+
+### Development Workflow Improvements
+
+The Nix-based workflow provides several enhancements:
+
+```bash
+# Single command to get fully configured environment
+nix develop
+
+# Rich welcome message with command reference
+# Automatic tool availability (Go, golangci-lint, air)
+# Consistent versions across team members
+
+# Enhanced build commands with better output
+nix run .#build  # Includes emoji feedback and clear status
+nix run .#test   # Better formatted test output
+nix run .#clean  # More thorough cleanup including Nix artifacts
+```
+
 ### Version Management
 
 The project maintains version consistency across multiple files. To update the version:
 
 ```bash
-# Update version in all relevant files
+# Using Nix (recommended)
+nix run .#set-version 1.0.0
+
+# Or using Make (legacy)
 make set-version VERSION=1.0.0
 ```
 
@@ -83,11 +180,11 @@ The version management uses Perl for robust regex replacements across different 
 Create binaries for all supported platforms:
 
 ```bash
-# Using Make (creates dist/ directory with all platforms)
-make release
-
-# Using Nix (creates result-release/ symlink with all platforms)
+# Using Nix (recommended)
 nix run .#release
+
+# Using Make (legacy)
+make release
 ```
 
 Both methods create binaries for:
@@ -97,6 +194,8 @@ Both methods create binaries for:
 - Windows (x86_64, aarch64)
 
 Plus checksums and compressed archives.
+
+The Nix method creates a `result-release/` symlink while Make creates a `dist/` directory.
 
 #### Manual Cross-Compilation
 

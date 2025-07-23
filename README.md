@@ -33,10 +33,27 @@ Download the latest release from the [releases page](https://github.com/plnsc/ma
 go install github.com/plnsc/making-mirrors@latest
 ```
 
-#### Option 3: Using Nix
+#### Option 3: Using Nix (Recommended)
+
+**Direct run without installation:**
 
 ```bash
 nix run github:plnsc/making-mirrors
+```
+
+**Install globally:**
+
+```bash
+nix profile install github:plnsc/making-mirrors
+```
+
+**For development:**
+
+```bash
+git clone https://github.com/plnsc/making-mirrors.git
+cd making-mirrors
+nix develop  # Enter development environment
+nix run .#build  # Build the project
 ```
 
 #### Option 4: Build from Source
@@ -175,6 +192,33 @@ mirrors/
 
 For development instructions, build automation, cross-platform compilation, and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
+**Note**: This project has migrated from Make to Nix for improved reproducibility. See [docs/unreleased/MIGRATION.md](docs/unreleased/MIGRATION.md) for the command mapping and migration guide.
+
+### Build System Migration
+
+This project has transitioned from Make to Nix as the primary build system. The migration provides:
+
+- **Zero Dependencies**: No need for Make installation
+- **Reproducible Builds**: Consistent environments across all platforms
+- **Rich Development Environment**: Integrated toolchain with Go, linters, and development tools
+- **Cross-Platform Consistency**: Identical experience on Linux, macOS, and Windows
+
+#### Quick Command Reference
+
+| Task        | Nix Command                   |
+| ----------- | ----------------------------- |
+| Build       | `nix run .#build`             |
+| Test        | `nix run .#test`              |
+| Clean       | `nix run .#clean`             |
+| Format      | `nix run .#fmt`               |
+| Lint        | `nix run .#lint`              |
+| Version     | `nix run .#version`           |
+| Set Version | `nix run .#set-version 1.0.0` |
+| Release     | `nix run .#release`           |
+| Dev Shell   | `nix develop`                 |
+
+For complete migration details, see [docs/unreleased/MIGRATION.md](docs/unreleased/MIGRATION.md).
+
 ## Use Cases
 
 - **Backup Strategy**: Create local backups of important repositories
@@ -187,16 +231,17 @@ For development instructions, build automation, cross-platform compilation, and 
 
 ```text
 making-mirrors/
-├── main.go            # Main application code
+├── main.go            # Main application
 ├── main_test.go       # Tests
-├── go.mod             # Go module definition
-├── go.sum             # Go module checksums
-├── flake.nix          # Nix flake configuration with release system
-├── flake.lock         # Nix dependencies
-├── Makefile           # Build automation with release targets
-├── LICENSE.md         # MIT license
-├── README.md          # This documentation
-├── DEVELOPMENT.md     # Development guide
+├── go.mod             # Go dependencies
+├── docs/              # Documentation
+│   └── unreleased/    # Unreleased documentation
+│       ├── MIGRATION.md  # Make to Nix migration guide
+│       ├── MIGRATION_SUMMARY.md  # Migration summary
+│       ├── DOCUMENTATION_UPDATE_SUMMARY.md  # Doc updates
+│       └── SET_VERSION_FIX.md  # Set-version implementation fix
+├── flake.nix          # Nix flake (build automation)
+├── CONTRIBUTING.md    # Contribution guidelines
 ├── CHANGELOG.md       # Version history
 └── VERSION            # Current version (0.0.1-alpha)
 ```
