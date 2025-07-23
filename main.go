@@ -22,7 +22,7 @@ type Repository struct {
 }
 
 func main() {
-	fmt.Println("Making Mirrors - Repository Mirror Tool")
+	fmt.Println("Making Mirrors for Git Repositories")
 	fmt.Println("======================================")
 
 	// Define CLI flags
