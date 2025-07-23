@@ -22,7 +22,7 @@ type Repository struct {
 
 func main() {
 	fmt.Println("Making Mirrors for Git Repositories")
-	fmt.Println("======================================")
+	fmt.Println("===")
 
 	// Define CLI flags
 	var registryFile = flag.String("input", "registry.csv", "Path to the registry CSV file")
@@ -62,9 +62,9 @@ func main() {
 
 	// Start workers
 	var wg sync.WaitGroup
-	for i := 0; i < numWorkers; i++ {
+	for range numWorkers {
 		wg.Add(1)
-		go worker(i+1, finalMirrorsDir, repoChan, resultChan, &wg)
+		go worker(finalMirrorsDir, repoChan, resultChan, &wg)
 	}
 
 	// Send repositories to workers
@@ -180,29 +180,29 @@ func parseRepositoryLine(line string) (Repository, error) {
 	}, nil
 }
 
-func worker(id int, mirrorsDir string, repoChan <-chan Repository, resultChan chan<- string, wg *sync.WaitGroup) {
+func worker(mirrorsDir string, repoChan <-chan Repository, resultChan chan<- string, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	for repo := range repoChan {
-		result := mirrorRepository(id, mirrorsDir, repo)
+		result := mirrorRepository(mirrorsDir, repo)
 		resultChan <- result
 	}
 }
 
-func mirrorRepository(workerID int, mirrorsDir string, repo Repository) string {
+func mirrorRepository(mirrorsDir string, repo Repository) string {
 	repoDir := filepath.Join(mirrorsDir, repo.Provider, repo.Owner, repo.Name)
 
 	// Check if repository already exists (check for refs directory in bare repository)
 	if _, err := os.Stat(filepath.Join(repoDir, "refs")); err == nil {
 		// Repository exists, pull latest changes
-		return pullRepository(workerID, repoDir, repo)
+		return pullRepository(repoDir, repo)
 	} else {
 		// Repository doesn't exist, clone it
-		return cloneRepository(workerID, mirrorsDir, repo)
+		return cloneRepository(mirrorsDir, repo)
 	}
 }
 
-func cloneRepository(workerID int, mirrorsDir string, repo Repository) string {
+func cloneRepository(mirrorsDir string, repo Repository) string {
 	repoDir := filepath.Join(mirrorsDir, repo.Provider, repo.Owner, repo.Name)
 
 	// Create parent directory
@@ -219,7 +219,7 @@ func cloneRepository(workerID int, mirrorsDir string, repo Repository) string {
 	return fmt.Sprintf("✓ %s/%s: Cloned successfully", repo.Owner, repo.Name)
 }
 
-func pullRepository(workerID int, repoDir string, repo Repository) string {
+func pullRepository(repoDir string, repo Repository) string {
 	// Get the current state of refs before update
 	beforeCmd := exec.Command("git", "-C", repoDir, "show-ref")
 	beforeOutput, beforeErr := beforeCmd.Output()
