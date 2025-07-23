@@ -16,7 +16,7 @@ A Go command-line application for creating and maintaining mirrors of Git reposi
 ## Prerequisites
 
 - [Git](https://git-scm.com/) installed and available in PATH
-- [Go](https://golang.org/dl/) 1.21+ (for building from source)
+- [Go](https://golang.org/dl/) 1.22+ (for building from source)
 - [Nix](https://nixos.org/download.html) with flakes enabled (optional, for Nix-based workflow)
 
 ## Quick Start
