@@ -64,22 +64,22 @@ set-version:
 		exit 1; \
 	fi
 	@echo "Setting version to $(VERSION) in all files..."
-	
+
 	# Update VERSION file
 	echo "$(VERSION)" > VERSION
-	
+
 	# Update version in main.go using perl for better regex handling
 	perl -i -pe 's/AppVersion = "[^"]*"/AppVersion = "$(VERSION)"/' main.go
-	
+
 	# Update version in flake.nix
 	perl -i -pe 's/version = "[^"]*";/version = "$(VERSION)";/' flake.nix
-	
-	# Update version in main_test.go
+
+	# Update version in main_test.go - be more specific to avoid replacing wrong fields
 	perl -i -pe 's/\{"AppVersion", AppVersion, "[^"]*"\}/{"AppVersion", AppVersion, "$(VERSION)"}/' main_test.go
-	perl -i -pe 's/Version:\s+"[^"]*",/Version:   "$(VERSION)",/' main_test.go
-	perl -i -pe 's/info\.Version != "[^"]*"/info.Version != "$(VERSION)"/' main_test.go
-	perl -i -pe 's/(Version = %q, want %q", info\.Version, ")[^"]*"/$$1$(VERSION)"/' main_test.go
-	
+	perl -i -pe 's/Version:\s+"[^"]*",(?=\s*GitCommit)/Version:   "$(VERSION)",/' main_test.go
+	perl -i -pe 's/info\.Version != "[^"]*"(?=\))/info.Version != "$(VERSION)"/' main_test.go
+	perl -i -pe 's/(Version = %q, want %q", info\.Version, ")[^"]*"(\))/$$1$(VERSION)"$$2/' main_test.go
+
 	@echo "Version $(VERSION) has been set in all files"
 	@echo "Updated files:"
 	@echo "  - VERSION"

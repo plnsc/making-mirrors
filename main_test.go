@@ -704,11 +704,11 @@ func TestBuildInfoStruct(t *testing.T) {
 			Version:   "0.0.1-alpha",
 			GitCommit: "abc123def",
 			BuildTime: "2025-07-23T10:00:00Z",
-			GoVersion:   "0.0.1-alpha",
+			GoVersion: "go1.22.0",
 		}
 
 		if info.Version != "0.0.1-alpha" {
-			t.Errorf(".0.1-alpha")
+			t.Errorf("Version = %q, want %q", info.Version, "0.0.1-alpha")
 		}
 		if info.GitCommit != "abc123def" {
 			t.Errorf("GitCommit = %q, want %q", info.GitCommit, "abc123def")
@@ -724,7 +724,7 @@ func TestBuildInfoStruct(t *testing.T) {
 	t.Run("zero value BuildInfo", func(t *testing.T) {
 		var info BuildInfo
 
-		if info.Version != "0.0.1-alpha" {
+		if info.Version != "" {
 			t.Errorf("Zero value Version should be empty, got %q", info.Version)
 		}
 		if info.GitCommit != "" {
