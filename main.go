@@ -25,7 +25,7 @@ func main() {
 	fmt.Println("===")
 
 	// Define CLI flags
-	var registryFile = flag.String("input", "registry.csv", "Path to the registry CSV file")
+	var registryFile = flag.String("input", "$HOME/Code/mirrors/registry.txt", "Path to the registry CSV file")
 	var mirrorsDir = flag.String("output", "$HOME/Code/mirrors", "Directory to store mirrors")
 	flag.Parse()
 
