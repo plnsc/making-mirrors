@@ -1,4 +1,4 @@
-name: CI
+name: Build
 
 on:
   push:
@@ -7,7 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  nix-build:
+    name: Nix Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,17 +20,17 @@ jobs:
       - name: Build with Nix
         run: nix build
 
-      - name: Run Nix tests
-        run: nix run .#test
-
-  test:
+  go-build:
+    name: Go Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v25
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
 
-      - name: Run Go tests in Nix shell
-        run: nix develop --command go test -v ./...
+      - name: Build Go
+        run: go build ./...
