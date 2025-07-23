@@ -36,8 +36,8 @@ func main() {
 
 	// Expand environment variables and tilde (~) to full paths
 	finalMirrorsDir = expandPath(finalMirrorsDir)
-	finalRegistryFile = expandPath(finalRegistryFile)
 	fmt.Printf("Output directory: %s\n", finalMirrorsDir)
+	finalRegistryFile = expandPath(finalRegistryFile)
 	fmt.Printf("Registry file: %s\n", finalRegistryFile)
 
 	// Create mirrors directory if it doesn't exist
