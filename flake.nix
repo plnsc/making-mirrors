@@ -15,20 +15,22 @@
       system = "x86_64-darwin";
       pkgs = import nixpkgs { inherit system; };
 
-      # Build the Go package
       makingMirrors = pkgs.buildGoModule {
         pname = "making-mirrors";
         version = "0.1.0";
         src = ./.;
 
-        vendorHash = null; # No dependencies yet
+        vendorHash = null;
 
-        # Ensure the binary is named correctly
-        subPackages = [ "." ];
-        
-        # Build flags
-        ldflags = [ "-s" "-w" ];
-        
+        subPackages = [
+          "."
+        ];
+
+        ldflags = [
+          "-s"
+          "-w"
+        ];
+
         meta = with pkgs.lib; {
           description = "Making Mirrors for Git Repositories";
           license = licenses.mit;
