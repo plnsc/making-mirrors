@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `docs/unreleased/DOCUMENTATION_UPDATE_SUMMARY.md` - Summary of documentation updates
   - `docs/unreleased/SET_VERSION_FIX.md` - Technical details about set-version implementation fix
 - **Zero External Dependencies**: No longer requires Make to be installed
+- Support for Gitea, AWS CodeCommit, and Azure Repos
 
 ### Changed
 

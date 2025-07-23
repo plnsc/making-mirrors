@@ -163,6 +163,39 @@ func TestParseRepositoryLine(t *testing.T) {
 			expectError: false,
 		},
 		{
+			name:  "valid gitea repository",
+			input: "gitea:john/doerepo",
+			expected: Repository{
+				Provider: "gitea",
+				Owner:    "john",
+				Name:     "doerepo",
+				URL:      "https://gitea.com/john/doerepo.git",
+			},
+			expectError: false,
+		},
+		{
+			name:  "valid aws codecommit repository",
+			input: "codecommit:us-west-2/myrepo",
+			expected: Repository{
+				Provider: "codecommit",
+				Owner:    "us-west-2",
+				Name:     "myrepo",
+				URL:      "https://git-codecommit.us-west-2.amazonaws.com/v1/repos/myrepo",
+			},
+			expectError: false,
+		},
+		{
+			name:  "valid azure repository",
+			input: "azure:myorg/myproject",
+			expected: Repository{
+				Provider: "azure",
+				Owner:    "myorg",
+				Name:     "myproject",
+				URL:      "https://dev.azure.com/myorg/myproject/_git/myproject",
+			},
+			expectError: false,
+		},
+		{
 			name:  "repository with .git suffix",
 			input: "github:golang/go.git",
 			expected: Repository{

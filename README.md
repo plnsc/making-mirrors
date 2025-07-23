@@ -10,48 +10,59 @@ A Go command-line application for creating and maintaining mirrors of Git reposi
 ## Features
 
 - **Concurrent Processing**: Uses all available CPU cores for fast mirroring
-- **Multiple Providers**: Supports GitHub, GitLab, and Bitbucket repositories
+- **Multiple Providers**: Supports GitHub, GitLab, Bitbucket, Gitea, AWS CodeCommit, and Azure Repos
 - **Incremental Updates**: Updates existing mirrors without re-cloning
 - **Flexible Configuration**: Customizable input and output directories
 - **Cross-Platform**: Works on Linux, macOS, and Windows
 
-## Prerequisites
 
-- [Git](https://git-scm.com/) installed and available in PATH
-- [Nix](https://nixos.org/download.html) with flakes enabled (recommended for best experience)
-- [Go](https://golang.org/dl/) 1.22+ (only if building from source without Nix)
+### Registry File Format
 
-## Quick Start
+The registry file contains one repository per line in the format:
 
-### Installation
-
-#### Option 1: Using Nix (Recommended)
-
-**Direct run without installation:**
-
-```bash
-nix run github:plnsc/making-mirrors
+```text
+provider:owner/repository
 ```
 
-**Install globally:**
+Supported providers:
 
-```bash
-nix profile install github:plnsc/making-mirrors
+- `github` - GitHub repositories
+- `gitlab` - GitLab repositories
+- `bitbucket` - Bitbucket repositories
+- `gitea` - Gitea repositories
+- `codecommit` - AWS CodeCommit repositories (e.g. `codecommit:us-west-2/myrepo`)
+- `azure` - Azure Repos (e.g. `azure:org/project`)
+
+Example registry file:
+
+```text
+# Core development tools
+github:git/git
+github:golang/go
+github:rust-lang/rust
+
+# Container ecosystem
+github:docker/docker
+github:kubernetes/kubernetes
+
+# GitLab projects
+gitlab:gitlab-org/gitlab
+gitlab:gitlab-org/gitaly
+
+# Bitbucket repositories
+bitbucket:atlassian/stash
+
+# Gitea repositories
+gitea:john/doerepo
+
+# AWS CodeCommit
+codecommit:us-west-2/myrepo
+
+# Azure Repos
+azure:myorg/myproject
 ```
 
-**For development:**
-
-```bash
-git clone https://github.com/plnsc/making-mirrors.git
-cd making-mirrors
-nix develop  # Enter development environment
-nix run .#build  # Build the project
-```
-
-> **Why Nix?** Nix provides reproducible builds, zero dependency management, and works identically across all platforms. No need to install Go, Make, or manage toolchains manually.
-
-#### Option 2: Download Pre-built Binary
-
+Lines starting with `#` are treated as comments and ignored.
 Download the latest release from the [releases page](https://github.com/plnsc/making-mirrors/releases).
 
 #### Option 3: Install with Go
