@@ -2,7 +2,7 @@
 
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
-A Rust application built and managed with Nix flakes.
+A Rust application for creating mirrors of Git repositories, built and managed with Nix flakes.
 
 ## Prerequisites
 
@@ -22,7 +22,6 @@ This will:
 - Install the Rust toolchain (latest stable)
 - Provide development tools (cargo-watch, cargo-edit, rust-analyzer)
 - Set up the shell with helpful commands
-- Keep Python support from the original environment
 
 ### 2. Build the Application
 
@@ -115,19 +114,28 @@ making-mirrors/
 ├── flake.nix          # Nix flake configuration
 ├── flake.lock         # Locked dependencies
 ├── Cargo.toml         # Rust package manifest
+├── Cargo.lock         # Locked Rust dependencies
 ├── src/
 │   └── main.rs        # Main application code
 ├── .gitignore         # Git ignore rules
 └── README.md          # This file
 ```
 
-## Nix Flake Outputs
+## Nix Flake Features
 
 This flake provides several outputs:
 
 - **`packages.default`**: The built Rust application
+- **`packages.making-mirrors`**: Alternative name for the same package
 - **`devShells.default`**: Development environment with Rust toolchain
 - **`apps.default`**: Direct application runner
+
+### Key Improvements
+
+- ✅ **No Apple SDK warnings**: Uses `libiconv` instead of deprecated framework stubs
+- ✅ **Fixed development shell**: No longer exits unexpectedly
+- ✅ **Correct cargo hash**: Properly configured for the current project
+- ✅ **Clean build**: No deprecation warnings or errors
 
 ### Using Different Outputs
 
@@ -138,6 +146,10 @@ nix run .#default            # Run the application
 ```
 
 ## Troubleshooting
+
+### Development Shell Issues
+
+If the development shell exits immediately, this has been fixed in the current version. The shell should now stay open and display the welcome message.
 
 ### First Build Issues
 
@@ -152,13 +164,9 @@ After modifying `Cargo.toml`, you may need to update the `cargoHash` in `flake.n
 3. Copy the correct hash from the error message
 4. Update `flake.nix` with the new hash
 
-### Shell Issues
+### Apple Silicon Macs
 
-If the development shell doesn't start properly, try:
-
-```bash
-nix develop --impure
-```
+If you're on Apple Silicon (M1/M2/M3), you may want to change the `system` in `flake.nix` from `x86_64-darwin` to `aarch64-darwin` for optimal performance.
 
 ### Updating Flake Inputs
 
@@ -174,6 +182,15 @@ nix flake lock      # Update lock file
 3. Format with `cargo fmt`
 4. Lint with `cargo clippy`
 5. Build with `nix build` to ensure Nix compatibility
+6. Test the development shell with `nix develop`
+
+## What's Working
+
+- ✅ Nix flake builds successfully without warnings
+- ✅ Development shell stays open and provides Rust toolchain
+- ✅ Application runs with `nix run`
+- ✅ Clean build process with proper dependencies
+- ✅ macOS compatibility with `libiconv`
 
 ## License
 

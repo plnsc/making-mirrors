@@ -76,12 +76,6 @@
 
           # Build tools
           pkg-config
-
-          # Python (keeping from original)
-          (python311.withPackages (pypkgs: [
-            pypkgs.pip
-            pypkgs.distutils
-          ]))
         ];
 
         buildInputs =

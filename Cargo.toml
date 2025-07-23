@@ -1,5 +1,6 @@
 [package]
 name = "making-mirrors"
+description = "Making Mirrors for Git Repositories"
 version = "0.1.0"
 edition = "2021"
 
