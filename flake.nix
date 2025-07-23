@@ -59,6 +59,49 @@
         {
           default = makingMirrors;
           making-mirrors = makingMirrors;
+          
+          # Cross-platform release package
+          release = let
+            pkgs = import nixpkgs { inherit system; };
+          in pkgs.stdenv.mkDerivation {
+            pname = "making-mirrors-release";
+            version = builtins.replaceStrings ["\n"] [""] (builtins.readFile ./VERSION);
+            
+            nativeBuildInputs = with pkgs; [ go gnutar gzip coreutils ];
+            src = ./.;
+            
+            buildPhase = ''
+              export GOCACHE=$TMPDIR/go-cache
+              export GOPATH=$TMPDIR/go
+              export HOME=$TMPDIR
+              
+              mkdir -p dist
+              
+              # Cross-compile for different platforms  
+              GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o dist/making-mirrors-x86_64-linux -ldflags "-X main.version=$(cat VERSION)" .
+              GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o dist/making-mirrors-aarch64-linux -ldflags "-X main.version=$(cat VERSION)" .
+              GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -o dist/making-mirrors-x86_64-darwin -ldflags "-X main.version=$(cat VERSION)" .
+              GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build -o dist/making-mirrors-aarch64-darwin -ldflags "-X main.version=$(cat VERSION)" .
+              GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -o dist/making-mirrors-windows-amd64.exe -ldflags "-X main.version=$(cat VERSION)" .
+              GOOS=windows GOARCH=arm64 CGO_ENABLED=0 go build -o dist/making-mirrors-windows-arm64.exe -ldflags "-X main.version=$(cat VERSION)" .
+              
+              # Create checksums
+              cd dist && sha256sum * > checksums.txt
+              
+              # Create tarball  
+              cd .. && tar -czf dist/making-mirrors-$(cat VERSION).tar.gz -C dist --exclude="*.tar.gz" .
+            '';
+            
+            installPhase = ''
+              mkdir -p $out
+              cp -r dist/* $out/
+            '';
+            
+            meta = with pkgs.lib; {
+              description = "Cross-platform release of Making Mirrors";
+              license = licenses.mit;
+            };
+          };
         }
       );
 
@@ -95,6 +138,7 @@
               echo "  go test        - Run tests"
               echo "  go mod tidy    - Tidy up dependencies"
               echo "  air            - Live reload development server"
+              echo "  nix run .#release - Create cross-platform release"
               echo ""
             '';
           };
@@ -106,6 +150,7 @@
         system:
         let
           makingMirrors = makingMirrorsForSystem system;
+          pkgs = import nixpkgs { inherit system; };
         in
         {
           default = {
@@ -113,6 +158,31 @@
             program = "${makingMirrors}/bin/making-mirrors";
             meta = {
               description = "Run the Making Mirrors application";
+            };
+          };
+          
+          # Release builder app
+          release = {
+            type = "app";
+            program = toString (pkgs.writeShellScript "build-release" ''
+              echo "🚀 Building cross-platform release with Nix..."
+              
+              # Build the release package
+              nix build .#release --out-link result-release
+              
+              echo "✅ Release build complete!"
+              echo "Release artifacts are in: $(readlink -f result-release)"
+              echo ""
+              echo "Contents:"
+              ls -la result-release/
+              echo ""
+              if [ -f result-release/checksums.txt ]; then
+                echo "Checksums:"
+                cat result-release/checksums.txt
+              fi
+            '');
+            meta = {
+              description = "Build cross-platform release of Making Mirrors";
             };
           };
         }
