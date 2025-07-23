@@ -103,42 +103,6 @@ go build
    making-mirrors -input ./my-repos.txt -output ./my-mirrors
    ```
 
-### Registry File Format
-
-The registry file contains one repository per line in the format:
-
-```text
-provider:owner/repository
-```
-
-Supported providers:
-
-- `github` - GitHub repositories
-- `gitlab` - GitLab repositories
-- `bitbucket` - Bitbucket repositories
-
-Example registry file:
-
-```text
-# Core development tools
-github:git/git
-github:golang/go
-github:rust-lang/rust
-
-# Container ecosystem
-github:docker/docker
-github:kubernetes/kubernetes
-
-# GitLab projects
-gitlab:gitlab-org/gitlab
-gitlab:gitlab-org/gitaly
-
-# Bitbucket repositories
-bitbucket:atlassian/stash
-```
-
-Lines starting with `#` are treated as comments and ignored.
-
 ## Command Line Options
 
 ```text
