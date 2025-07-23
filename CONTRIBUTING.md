@@ -31,6 +31,7 @@ Thank you for your interest in contributing to Making Mirrors! This document pro
    - All necessary dependencies
 
 3. **Verify your setup:**
+
    ```bash
    go version
    go test
@@ -64,6 +65,7 @@ Thank you for your interest in contributing to Making Mirrors! This document pro
    ```
 
 5. **Test with Nix:**
+
    ```bash
    nix build
    nix run
@@ -137,7 +139,6 @@ If your changes affect usage or installation:
    ```
 
 2. **Update documentation** if necessary
-
 3. **Create a pull request** with:
 
    - Clear title and description

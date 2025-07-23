@@ -2,244 +2,321 @@
 
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
-A Go application for creating mirrors of Git repositories, built and managed with Nix flakes. This flake is designed to be easily used as an input in other Nix projects.
+A Go command-line application for creating and maintaining mirrors of Git repositories. It reads a registry of repositories and creates local bare Git mirrors with concurrent processing for efficient operations.
+
+## Features
+
+- **Concurrent Processing**: Uses all available CPU cores for fast mirroring
+- **Multiple Providers**: Supports GitHub, GitLab, and Bitbucket repositories
+- **Incremental Updates**: Updates existing mirrors without re-cloning
+- **Flexible Configuration**: Customizable input and output directories
+- **Cross-Platform**: Works on Linux, macOS, and Windows
 
 ## Prerequisites
 
-- [Nix](https://nixos.org/download.html) with flakes enabled
-- On macOS: Ensure you have the latest Nix with flakes support
+- [Git](https://git-scm.com/) installed and available in PATH
+- [Go](https://golang.org/dl/) 1.21+ (for building from source)
+- [Nix](https://nixos.org/download.html) with flakes enabled (optional, for Nix-based workflow)
 
 ## Quick Start
 
-### Using as a Flake Input
+### Installation
 
-To use this project in another Nix flake:
+#### Option 1: Download Pre-built Binary
 
-```nix
-{
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    making-mirrors.url = "github:plnsc/making-mirrors";
-  };
+Download the latest release from the [releases page](https://github.com/plnsc/making-mirrors/releases).
 
-  outputs = { nixpkgs, making-mirrors, ... }: {
-    # Option 1: Use the package directly
-    packages.x86_64-linux.my-package = making-mirrors.packages.x86_64-linux.default;
+#### Option 2: Install with Go
 
-    # Option 2: Use the overlay
-    packages.x86_64-linux.my-env = let
-      pkgs = import nixpkgs {
-        system = "x86_64-linux";
-        overlays = [ making-mirrors.overlays.default ];
-      };
-    in pkgs.making-mirrors;
-  };
-}
+```bash
+go install github.com/plnsc/making-mirrors@latest
 ```
 
-### Local Development
+#### Option 3: Build from Source
 
-### 1. Enter the Development Environment
+```bash
+git clone https://github.com/plnsc/making-mirrors.git
+cd making-mirrors
+go build
+```
+
+#### Option 4: Using Nix
+
+```bash
+nix run github:plnsc/making-mirrors
+```
+
+### Basic Usage
+
+1. **Create a registry file** (`registry.txt`) with repositories to mirror:
+
+   ```text
+   github:torvalds/linux
+   github:golang/go
+   gitlab:gitlab-org/gitlab
+   bitbucket:atlassian/localstack
+   ```
+
+2. **Run the application**:
+
+   ```bash
+   making-mirrors
+   ```
+
+   Or with custom paths:
+
+   ```bash
+   making-mirrors -input ./my-repos.txt -output ./my-mirrors
+   ```
+
+### Registry File Format
+
+The registry file contains one repository per line in the format:
+
+```text
+provider:owner/repository
+```
+
+Supported providers:
+
+- `github` - GitHub repositories
+- `gitlab` - GitLab repositories  
+- `bitbucket` - Bitbucket repositories
+
+Example registry file:
+
+```text
+# Core development tools
+github:git/git
+github:golang/go
+github:rust-lang/rust
+
+# Container ecosystem
+github:docker/docker
+github:kubernetes/kubernetes
+
+# GitLab projects
+gitlab:gitlab-org/gitlab
+gitlab:gitlab-org/gitaly
+
+# Bitbucket repositories
+bitbucket:atlassian/stash
+```
+
+Lines starting with `#` are treated as comments and ignored.
+
+## Command Line Options
+
+```text
+making-mirrors [flags]
+
+Flags:
+  -input string
+        Path to the registry file (default "$HOME/Code/mirrors/registry.txt")
+  -output string
+        Directory to store mirrors (default "$HOME/Code/mirrors")
+  -version
+        Show version information
+```
+
+## Examples
+
+### Mirror to Custom Directory
+
+```bash
+making-mirrors -output /backup/git-mirrors
+```
+
+### Use Custom Registry File
+
+```bash
+making-mirrors -input ./important-repos.txt -output ./mirrors
+```
+
+### Environment Variable Expansion
+
+Both input and output paths support environment variable expansion:
+
+```bash
+export MIRROR_DIR="/data/mirrors"
+making-mirrors -output "$MIRROR_DIR"
+```
+
+## How It Works
+
+The application creates **bare Git mirrors** using `git clone --mirror`, which:
+
+- Downloads all branches and tags
+- Maintains exact copies of the remote repositories
+- Stores repositories in a structured directory format: `provider/owner/repository`
+- Supports incremental updates with `git remote update`
+
+### Directory Structure
+
+Mirrors are organized as follows:
+
+```text
+mirrors/
+├── github/
+│   ├── torvalds/
+│   │   └── linux/          # Bare Git repository
+│   └── golang/
+│       └── go/             # Bare Git repository
+├── gitlab/
+│   └── gitlab-org/
+│       └── gitlab/         # Bare Git repository
+└── bitbucket/
+    └── atlassian/
+        └── stash/          # Bare Git repository
+```
+
+## Development
+
+### Building from Source
+
+```bash
+git clone https://github.com/plnsc/making-mirrors.git
+cd making-mirrors
+go mod download
+go build
+```
+
+### Running Tests
+
+```bash
+go test ./...
+```
+
+### Using with Nix (Optional)
+
+If you prefer using Nix for development:
+
+#### Enter Development Environment
 
 ```bash
 nix develop
 ```
 
-This will:
-
-- Install the Go toolchain (latest stable)
-- Provide development tools (gopls, golangci-lint, gotools, air)
-- Set up the shell with helpful commands
-
-### 2. Build the Application
-
-Using Nix (recommended for production builds):
+#### Build with Nix
 
 ```bash
 nix build
 ```
 
-Using Go (for development):
-
-```bash
-go build
-```
-
-### 3. Run the Application
-
-Using Nix:
+#### Run with Nix
 
 ```bash
 nix run
 ```
 
-Using Go (in development shell):
+### Cross-Platform Builds
+
+#### Using Go
 
 ```bash
-go run .
+# Linux
+GOOS=linux GOARCH=amd64 go build -o making-mirrors-linux-amd64
+
+# Windows  
+GOOS=windows GOARCH=amd64 go build -o making-mirrors-windows-amd64.exe
+
+# macOS (Intel)
+GOOS=darwin GOARCH=amd64 go build -o making-mirrors-darwin-amd64
+
+# macOS (Apple Silicon)
+GOOS=darwin GOARCH=arm64 go build -o making-mirrors-darwin-arm64
 ```
 
-## Development Workflow
-
-### Enter Development Shell
+#### Using Nix
 
 ```bash
-nix develop
+nix build .#packages.x86_64-linux.default    # Intel/AMD Linux
+nix build .#packages.aarch64-linux.default   # ARM64 Linux  
+nix build .#packages.x86_64-darwin.default   # Intel Mac
+nix build .#packages.aarch64-darwin.default  # Apple Silicon Mac
 ```
 
-Once in the development shell, you have access to:
+## Use Cases
 
-### Basic Go Commands
-
-```bash
-go build            # Build the project
-go run .            # Run the project
-go test             # Run tests
-go mod tidy         # Clean up dependencies
-go fmt              # Format code
-go vet              # Examine code for issues
-```
-
-### Development Tools
-
-```bash
-air                 # Live reload development server
-golangci-lint run   # Run comprehensive linting
-gopls               # Language server (integrated with editors)
-```
-
-### Example: Adding Dependencies
-
-```bash
-go get github.com/gin-gonic/gin  # Add a dependency
-go mod tidy                      # Clean up go.mod and go.sum
-```
-
-## Building and Distribution
-
-### Build Optimized Binary
-
-```bash
-nix build
-```
-
-The built binary will be available at `./result/bin/making-mirrors`
-
-### Build for Different Targets
-
-The Nix flake supports multiple systems:
-
-- `x86_64-linux` (Intel/AMD Linux)
-- `aarch64-linux` (ARM64 Linux)
-- `x86_64-darwin` (Intel Mac)
-- `aarch64-darwin` (Apple Silicon Mac)
-
-To build for a specific system:
-
-```bash
-nix build .#packages.x86_64-linux.default    # Build for Intel/AMD Linux
-nix build .#packages.aarch64-linux.default   # Build for ARM64 Linux
-nix build .#packages.x86_64-darwin.default   # Build for Intel Mac
-nix build .#packages.aarch64-darwin.default  # Build for Apple Silicon Mac
-```
-
-You can also use Go's built-in cross-compilation:
-
-```bash
-GOOS=linux GOARCH=amd64 go build .     # Build for Linux
-GOOS=windows GOARCH=amd64 go build .   # Build for Windows
-```
-
-### Install Globally
-
-```bash
-nix profile install .
-```
+- **Backup Strategy**: Create local backups of important repositories
+- **Offline Development**: Work with repositories when internet is limited
+- **Repository Analysis**: Bulk analysis of multiple repositories
+- **CI/CD Mirroring**: Maintain local copies for build systems
+- **Research**: Academic research requiring repository data
 
 ## Project Structure
 
 ```text
 making-mirrors/
-├── flake.nix          # Nix flake configuration
-├── flake.lock         # Locked dependencies
-├── go.mod             # Go module definition
-├── go.sum             # Go module checksums (auto-generated)
 ├── main.go            # Main application code
-├── .gitignore         # Git ignore rules
-└── README.md          # This file
+├── main_test.go       # Tests
+├── go.mod             # Go module definition  
+├── go.sum             # Go module checksums
+├── flake.nix          # Nix flake configuration (optional)
+├── flake.lock         # Nix dependencies (optional)
+├── Makefile           # Build automation
+├── LICENSE.md         # MIT license
+├── README.md          # This documentation
+├── CHANGELOG.md       # Version history
+└── VERSION            # Current version
 ```
 
-## Nix Flake Features
+## Performance
 
-This flake provides several outputs:
-
-- **`packages.default`**: The built Go application
-- **`packages.making-mirrors`**: Alternative name for the same package
-- **`devShells.default`**: Development environment with Go toolchain
-- **`apps.default`**: Direct application runner
-
-### Key Features
-
-- ✅ **Go toolchain**: Latest stable Go compiler and tools
-- ✅ **Development tools**: gopls, golangci-lint, air for live reload
-- ✅ **Cross-platform builds**: Support for multiple architectures
-- ✅ **Clean development environment**: Isolated and reproducible
-
-### Using Different Outputs
-
-```bash
-nix build .#making-mirrors    # Build the package
-nix develop .#default         # Enter dev shell
-nix run .#default            # Run the application
-```
+- **Concurrent Processing**: Utilizes all CPU cores for parallel operations
+- **Incremental Updates**: Only fetches changes for existing repositories
+- **Efficient Storage**: Bare repositories use minimal disk space
+- **Progress Tracking**: Real-time status updates during operations
 
 ## Troubleshooting
 
-### Development Shell Issues
+### Common Issues
 
-If the development shell exits immediately, this has been fixed in the current version. The shell should now stay open and display the welcome message.
+#### Repository Clone Fails
 
-### First Build Issues
+- Ensure Git is installed and accessible
+- Check network connectivity to the Git provider
+- Verify repository URLs are correct and accessible
 
-On the first `nix build`, you may see an error about `vendorHash`. This is expected if you add dependencies! Nix will show you the correct hash. Copy it and update the `vendorHash` value in `flake.nix`.
+#### Permission Denied
 
-### Updating Dependencies
+- Ensure write permissions to the output directory
+- For private repositories, configure Git credentials
 
-After modifying `go.mod`, you may need to update the `vendorHash` in `flake.nix`:
+#### Out of Disk Space
 
-1. Delete the current hash (set it to an empty string or wrong hash)
-2. Run `nix build`
-3. Copy the correct hash from the error message
-4. Update `flake.nix` with the new hash
+- Monitor available disk space before mirroring large repositories
+- Consider using a different output directory with more space
 
-### Apple Silicon Macs
+### Getting Help
 
-If you're on Apple Silicon (M1/M2/M3), you may want to change the `system` in `flake.nix` from `x86_64-darwin` to `aarch64-darwin` for optimal performance.
-
-### Updating Flake Inputs
-
-```bash
-nix flake update    # Update all inputs
-nix flake lock      # Update lock file
-```
+- Check the repository [issues](https://github.com/plnsc/making-mirrors/issues) for known problems
+- View debug output by running with verbose Git operations
+- Ensure all dependencies (Git, Go) are properly installed
 
 ## Contributing
 
-1. Make your changes
-2. Test with `go test`
-3. Format with `go fmt`
-4. Lint with `golangci-lint run`
-5. Build with `nix build` to ensure Nix compatibility
-6. Test the development shell with `nix develop`
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes
+4. Add tests for new functionality
+5. Run tests: `go test ./...`
+6. Format code: `go fmt ./...`
+7. Run linting (if available): `golangci-lint run`
+8. Commit changes: `git commit -am 'Add feature'`
+9. Push to branch: `git push origin feature-name`
+10. Create a Pull Request
 
-## What's Working
+### Development Requirements
 
-- ✅ Nix flake builds successfully without warnings
-- ✅ Development shell stays open and provides Go toolchain
-- ✅ Application runs with `nix run`
-- ✅ Clean build process with proper dependencies
-- ✅ macOS compatibility with `libiconv`
+- Go 1.21 or later
+- Git (for testing repository operations)
+- Make (optional, for using Makefile commands)
 
 ## License
 
-MIT
+MIT License - see [LICENSE.md](LICENSE.md) for details.
+
+## Author
+
+Paulo Nascimento - [GitHub](https://github.com/plnsc)
