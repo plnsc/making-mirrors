@@ -1,3 +1,29 @@
+// Package main provides a tool for creating mirrors of Git repositories.
+//
+// Making Mirrors is a command-line application that reads a registry of Git repositories
+// and creates local mirrors of them. It supports concurrent operations and handles
+// repositories from various Git hosting providers.
+//
+// Usage:
+//
+//	making-mirrors [flags]
+//
+// Flags:
+//
+//	-input string
+//	  	Path to the registry CSV file (default "$HOME/Code/mirrors/registry.txt")
+//	-output string
+//	  	Directory to store mirrors (default "$HOME/Code/mirrors")
+//
+// The registry file should contain repository information in a supported format,
+// and the tool will create bare Git mirrors in the specified output directory.
+//
+// Example:
+//
+//	making-mirrors -input ./repos.txt -output ./mirrors
+//
+// Author: Paulo Nascimento
+// License: MIT
 package main
 
 import (
@@ -13,6 +39,41 @@ import (
 	"sync"
 )
 
+// Package metadata and constants
+const (
+	// AppName is the name of the application
+	AppName = "making-mirrors"
+
+	// AppVersion is the current version of the application
+	AppVersion = "0.1.0"
+
+	// AppDescription is a brief description of what the application does
+	AppDescription = "A Go application for creating mirrors of Git repositories"
+
+	// AppAuthor is the author of the application
+	AppAuthor = "Paulo Nascimento"
+
+	// AppLicense is the license under which the application is distributed
+	AppLicense = "MIT"
+
+	// AppRepository is the URL to the source code repository
+	AppRepository = "https://github.com/plnsc/making-mirrors"
+
+	// DefaultRegistryFile is the default path for the registry file
+	DefaultRegistryFile = "$HOME/Code/mirrors/registry.txt"
+
+	// DefaultMirrorsDir is the default directory for storing mirrors
+	DefaultMirrorsDir = "$HOME/Code/mirrors"
+)
+
+// BuildInfo contains build-time information
+type BuildInfo struct {
+	Version   string
+	GitCommit string
+	BuildTime string
+	GoVersion string
+}
+
 type Repository struct {
 	Provider string
 	Owner    string
@@ -21,13 +82,24 @@ type Repository struct {
 }
 
 func main() {
-	fmt.Println("Making Mirrors for Git Repositories")
+	fmt.Printf("%s v%s\n", AppName, AppVersion)
+	fmt.Println(AppDescription)
 	fmt.Println("===")
 
 	// Define CLI flags
-	var registryFile = flag.String("input", "$HOME/Code/mirrors/registry.txt", "Path to the registry CSV file")
-	var mirrorsDir = flag.String("output", "$HOME/Code/mirrors", "Directory to store mirrors")
+	var registryFile = flag.String("input", DefaultRegistryFile, "Path to the registry CSV file")
+	var mirrorsDir = flag.String("output", DefaultMirrorsDir, "Directory to store mirrors")
+	var version = flag.Bool("version", false, "Show version information")
 	flag.Parse()
+
+	// Handle version flag
+	if *version {
+		fmt.Printf("%s version %s\n", AppName, AppVersion)
+		fmt.Printf("Author: %s\n", AppAuthor)
+		fmt.Printf("License: %s\n", AppLicense)
+		fmt.Printf("Repository: %s\n", AppRepository)
+		return
+	}
 
 	// Use the CLI flag values (with defaults if not provided)
 	finalMirrorsDir := *mirrorsDir
