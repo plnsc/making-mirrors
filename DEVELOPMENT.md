@@ -6,9 +6,9 @@ This document contains development-specific information for the making-mirrors p
 
 ### Requirements
 
-- [Nix](https://nixos.org/download.html) with flakes enabled (recommended)
-- Go 1.22 or later (if not using Nix)
+- [Nix](https://nixos.org/download.html) with flakes enabled (strongly recommended)
 - Git (for testing repository operations)
+- Go 1.22 or later (only if not using Nix - not recommended)
 
 ### Setting Up
 
@@ -26,7 +26,11 @@ This document contains development-specific information for the making-mirrors p
    nix develop
    ```
 
-3. **Alternative: Manual Go setup:**
+   > **Why Nix?** Zero configuration, reproducible environment, all tools included automatically.
+
+3. **Alternative: Manual Go setup (not recommended):**
+
+   > **Note:** Manual setup requires dependency management and may lead to inconsistent environments.
 
    ```bash
    # Install dependencies manually
@@ -36,18 +40,18 @@ This document contains development-specific information for the making-mirrors p
 4. Run tests:
 
    ```bash
-   # Using Nix
+   # Using Nix (recommended)
    nix run .#test
 
-   # Or using Go directly
+   # Manual Go testing (if not using Nix)
    go test ./...
    ```
 
 ## Development Workflow
 
-### Using Nix (Recommended)
+### Using Nix (Strongly Recommended)
 
-The project has migrated from Make to Nix for improved reproducibility and cross-platform consistency. All previous Make functionality is now available as Nix apps:
+This project uses Nix as the primary build system for superior developer experience. All development tasks are available as convenient Nix apps:
 
 ```bash
 # Build for current platform
@@ -81,62 +85,22 @@ nix run .#install
 nix develop
 ```
 
-### Legacy Make Support
+## Nix-Based Development Benefits
 
-The project includes a comprehensive Makefile for backward compatibility. See [docs/unreleased/MIGRATION.md](docs/unreleased/MIGRATION.md) for the complete command mapping from Make to Nix.
+### Why Choose Nix for Development?
 
-```bash
-# Build for current platform
-make build
+Using Nix provides several advantages over traditional development approaches:
 
-# Run tests
-make test
+- **Zero Configuration**: Run `nix develop` and everything is ready
+- **Reproducible Environments**: Identical setup across all team members and CI/CD
+- **No Dependency Hell**: All tools and versions managed automatically
+- **Cross-Platform Consistency**: Same experience on Linux, macOS, and Windows
+- **Instant Onboarding**: New developers are productive immediately
+- **Automated Tooling**: Pre-configured linting, formatting, and development tools
 
-# Clean build artifacts
-make clean
+### Enhanced Development Experience
 
-# Set a new version across all files
-make set-version VERSION=1.0.0
-
-# Create release builds for all platforms
-make release
-
-# Show available targets
-make help
-```
-
-## Migration from Make to Nix
-
-### Implementation Details
-
-The migration from Make to Nix was implemented by:
-
-1. **Converting Makefile targets to Nix apps**: Each Make target became a Nix app in `flake.nix`
-2. **Preserving all functionality**: Version management, cross-platform builds, and development workflows
-3. **Enhanced tooling**: Added golangci-lint, air, and other development tools to the Nix environment
-4. **Improved error handling**: Better error messages and path resolution in Nix scripts
-
-### Benefits Achieved
-
-- **Reproducible Builds**: Nix ensures identical builds across different machines and environments
-- **Zero External Dependencies**: No need for Make, Perl, or other system tools to be pre-installed
-- **Cross-Platform Consistency**: Same development experience on Linux, macOS, and Windows (WSL)
-- **Integrated Development Environment**: All tools available in a single `nix develop` command
-- **Better Caching**: Nix's content-addressed storage provides efficient build caching
-- **Atomic Operations**: Nix ensures builds either complete successfully or fail cleanly
-
-### Migration Strategy
-
-The migration maintains full backward compatibility:
-
-1. **Dual Support**: Both Make and Nix commands work simultaneously
-2. **Gradual Migration**: Teams can adopt Nix incrementally
-3. **Documentation**: Complete migration guide in `docs/unreleased/MIGRATION.md`
-4. **Command Mapping**: One-to-one mapping between Make and Nix commands
-
-### Development Workflow Improvements
-
-The Nix-based workflow provides several enhancements:
+The Nix development environment provides a superior workflow:
 
 ```bash
 # Single command to get fully configured environment
@@ -146,10 +110,10 @@ nix develop
 # Automatic tool availability (Go, golangci-lint, air)
 # Consistent versions across team members
 
-# Enhanced build commands with better output
-nix run .#build  # Includes emoji feedback and clear status
-nix run .#test   # Better formatted test output
-nix run .#clean  # More thorough cleanup including Nix artifacts
+# Enhanced build commands with clear feedback
+nix run .#build  # Includes status indicators and clear output
+nix run .#test   # Better formatted test results
+nix run .#clean  # Thorough cleanup including build artifacts
 ```
 
 ### Version Management
@@ -157,21 +121,16 @@ nix run .#clean  # More thorough cleanup including Nix artifacts
 The project maintains version consistency across multiple files. To update the version:
 
 ```bash
-# Using Nix (recommended)
+# Using Nix (recommended approach)
 nix run .#set-version 1.0.0
-
-# Or using Make (legacy)
-make set-version VERSION=1.0.0
 ```
 
-This command updates:
+This command automatically updates:
 
 - `VERSION` file
 - `main.go` version constant
 - `flake.nix` version field
 - `main_test.go` test expectations
-
-The version management uses Perl for robust regex replacements across different file formats.
 
 ### Cross-Platform Builds
 
@@ -180,44 +139,21 @@ The version management uses Perl for robust regex replacements across different 
 Create binaries for all supported platforms:
 
 ```bash
-# Using Nix (recommended)
+# Using Nix (recommended and only supported method)
 nix run .#release
-
-# Using Make (legacy)
-make release
 ```
 
-Both methods create binaries for:
+This creates binaries for:
 
 - Linux (x86_64, aarch64)
 - macOS (x86_64, aarch64)
 - Windows (x86_64, aarch64)
 
-Plus checksums and compressed archives.
-
-The Nix method creates a `result-release/` symlink while Make creates a `dist/` directory.
+Plus checksums and compressed archives in the `result-release/` directory.
 
 #### Manual Cross-Compilation
 
-If you need individual platform builds:
-
-##### Using Go
-
-```bash
-# Linux
-GOOS=linux GOARCH=amd64 go build -o making-mirrors-linux-amd64
-
-# Windows
-GOOS=windows GOARCH=amd64 go build -o making-mirrors-windows-amd64.exe
-
-# macOS (Intel)
-GOOS=darwin GOARCH=amd64 go build -o making-mirrors-darwin-amd64
-
-# macOS (Apple Silicon)
-GOOS=darwin GOARCH=arm64 go build -o making-mirrors-darwin-arm64
-```
-
-##### Using Nix
+If you need individual platform builds, use Nix for consistent results:
 
 ```bash
 nix build .#packages.x86_64-linux.default    # Intel/AMD Linux
@@ -226,55 +162,58 @@ nix build .#packages.x86_64-darwin.default   # Intel Mac
 nix build .#packages.aarch64-darwin.default  # Apple Silicon Mac
 ```
 
+> **Note:** While Go's built-in cross-compilation is available, Nix provides better reproducibility and dependency management.
+
 ## Nix Development
 
 ### Nix Flake Features
 
-The project includes a comprehensive Nix flake with:
+The project includes a comprehensive Nix flake providing:
 
-- Cross-platform build support
-- Development shell with all dependencies
-- Automated release system
-- Reproducible builds
+- **Cross-platform build support** for all major architectures
+- **Rich development shell** with all dependencies pre-configured
+- **Automated release system** with checksums and packaging
+- **Reproducible builds** guaranteed across environments
+- **Zero external dependencies** - everything managed by Nix
 
-### Using Nix for Development
+### Development Commands
 
 ```bash
-# Enter development shell
+# Enter development shell (recommended first step)
 nix develop
 
 # Build for current platform
 nix build
 
-# Run the application
+# Run the application directly
 nix run
 
-# Create release packages
+# Create comprehensive release packages
 nix run .#release
+
+# Run specific development tasks
+nix run .#test     # Run test suite
+nix run .#fmt      # Format code
+nix run .#lint     # Run linter
+nix run .#clean    # Clean artifacts
 ```
-
-### Nix Development Shell
-
-The development shell includes:
-
-- Go compiler and tools
-- Git for version control
-- Make for build automation
-- All project dependencies
 
 ## Testing
 
 ### Running Tests
 
 ```bash
-# Run all tests
+# Recommended: Using Nix
+nix run .#test
+
+# Alternative: Direct Go testing (if in nix develop shell)
 go test ./...
 
-# Run tests with verbose output
-go test -v ./...
+# Verbose output (using development shell)
+nix develop -c go test -v ./...
 
-# Run tests with coverage
-go test -cover ./...
+# Coverage analysis (using development shell)
+nix develop -c go test -cover ./...
 ```
 
 ### Test Structure
@@ -288,15 +227,20 @@ go test -cover ./...
 ### Formatting
 
 ```bash
-# Format all Go code
+# Recommended: Using Nix
+nix run .#fmt
+
+# Alternative: Direct Go formatting (if in development shell)
 go fmt ./...
 ```
 
 ### Linting
 
-If golangci-lint is available:
-
 ```bash
+# Recommended: Using Nix (includes golangci-lint automatically)
+nix run .#lint
+
+# Alternative: Manual linting (if golangci-lint is available)
 golangci-lint run
 ```
 
@@ -308,9 +252,8 @@ making-mirrors/
 ├── main_test.go       # Tests
 ├── go.mod             # Go module definition
 ├── go.sum             # Go module checksums
-├── flake.nix          # Nix flake configuration with release system
-├── flake.lock         # Nix dependencies
-├── Makefile           # Build automation with release targets
+├── flake.nix          # Nix flake configuration with comprehensive build system
+├── flake.lock         # Nix dependencies (locked versions)
 ├── LICENSE.md         # MIT license
 ├── README.md          # User documentation
 ├── DEVELOPMENT.md     # This development guide
@@ -322,54 +265,12 @@ making-mirrors/
 
 ### Build Issues
 
-- Ensure Go 1.22+ is installed
-- Run `go mod download` to fetch dependencies
-- Check that Git is available in PATH
-
-### Version Management Issues
-
-- The `set-version` target requires Perl for regex operations
-- Ensure all target files exist before running version updates
-- Check file permissions if updates fail
+- **Recommended**: Use `nix develop` to ensure all dependencies are available
+- For manual setups: Ensure Go 1.22+ is installed and run `go mod download`
+- Check that Git is available in PATH for repository operations
 
 ### Cross-Platform Build Issues
 
+- Use `nix run .#release` for consistent cross-platform builds
 - Ensure sufficient disk space for all platform binaries
-- For Nix builds, ensure Nix is properly installed and flakes are enabled
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Make your changes
-4. Add tests for new functionality
-5. Run tests: `go test ./...`
-6. Format code: `go fmt ./...`
-7. Run linting (if available): `golangci-lint run`
-8. Commit changes: `git commit -am 'Add feature'`
-9. Push to branch: `git push origin feature-name`
-10. Create a Pull Request
-
-### Code Review Guidelines
-
-- Ensure all tests pass
-- Add appropriate documentation
-- Follow Go best practices
-- Update CHANGELOG.md for significant changes
-- Update version if needed using `make set-version`
-
-## Release Process
-
-1. Update version: `make set-version VERSION=x.y.z`
-2. Update CHANGELOG.md with new version details
-3. Run tests: `go test ./...`
-4. Create release builds: `make release`
-5. Commit changes and create git tag
-6. Push to GitHub and create release
-
-The automated release system creates:
-
-- Binaries for all supported platforms
-- SHA256 checksums
-- Compressed archives
-- Release directory structure
+- For Nix: Ensure Nix is properly installed with flakes enabled

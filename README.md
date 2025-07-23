@@ -3,7 +3,7 @@
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 ![Version](https://img.shields.io/badge/version-0.0.1--alpha-blue)
 
-A Go command-line application for creating and maintaining mirrors of Git repositories. It reads a registry of repositories and creates local bare Git mirrors with concurrent processing for efficient operations.
+A Go command-line application for creating and maintaining mirrors of Git repositories. It reads a registry of repositories and creates local bare Git mirrors with concurrent processing.
 
 ## Features
 
@@ -16,24 +16,14 @@ A Go command-line application for creating and maintaining mirrors of Git reposi
 ## Prerequisites
 
 - [Git](https://git-scm.com/) installed and available in PATH
-- [Go](https://golang.org/dl/) 1.22+ (for building from source)
-- [Nix](https://nixos.org/download.html) with flakes enabled (optional, for Nix-based workflow)
+- [Nix](https://nixos.org/download.html) with flakes enabled (recommended for best experience)
+- [Go](https://golang.org/dl/) 1.22+ (only if building from source without Nix)
 
 ## Quick Start
 
 ### Installation
 
-#### Option 1: Download Pre-built Binary
-
-Download the latest release from the [releases page](https://github.com/plnsc/making-mirrors/releases).
-
-#### Option 2: Install with Go
-
-```bash
-go install github.com/plnsc/making-mirrors@latest
-```
-
-#### Option 3: Using Nix (Recommended)
+#### Option 1: Using Nix (Recommended)
 
 **Direct run without installation:**
 
@@ -56,7 +46,21 @@ nix develop  # Enter development environment
 nix run .#build  # Build the project
 ```
 
-#### Option 4: Build from Source
+> **Why Nix?** Nix provides reproducible builds, zero dependency management, and works identically across all platforms. No need to install Go, Make, or manage toolchains manually.
+
+#### Option 2: Download Pre-built Binary
+
+Download the latest release from the [releases page](https://github.com/plnsc/making-mirrors/releases).
+
+#### Option 3: Install with Go
+
+```bash
+go install github.com/plnsc/making-mirrors@latest
+```
+
+#### Option 4: Build from Source (Not Recommended)
+
+> **Note:** Building from source requires manual dependency management. Consider using Nix instead for a better experience.
 
 ```bash
 git clone https://github.com/plnsc/making-mirrors.git
@@ -192,16 +196,17 @@ mirrors/
 
 For development instructions, build automation, cross-platform compilation, and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
-**Note**: This project has migrated from Make to Nix for improved reproducibility. See [docs/unreleased/MIGRATION.md](docs/unreleased/MIGRATION.md) for the command mapping and migration guide.
+**Recommended Development Setup**: Use Nix for the best development experience with zero configuration. See [docs/unreleased/MIGRATION.md](docs/unreleased/MIGRATION.md) for the complete command reference and migration benefits.
 
 ### Build System Migration
 
-This project has transitioned from Make to Nix as the primary build system. The migration provides:
+This project uses Nix as the primary build system, providing superior developer experience compared to traditional approaches:
 
-- **Zero Dependencies**: No need for Make installation
-- **Reproducible Builds**: Consistent environments across all platforms
-- **Rich Development Environment**: Integrated toolchain with Go, linters, and development tools
-- **Cross-Platform Consistency**: Identical experience on Linux, macOS, and Windows
+- **Zero Dependencies**: No need to install Go, Make, or manage toolchains
+- **Reproducible Builds**: Identical environments guaranteed across all platforms
+- **Rich Development Environment**: Pre-configured with Go, linters, and development tools
+- **Cross-Platform Consistency**: Perfect experience on Linux, macOS, and Windows
+- **Instant Setup**: Just run `nix develop` and you're ready to contribute
 
 #### Quick Command Reference
 

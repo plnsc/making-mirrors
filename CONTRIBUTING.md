@@ -6,7 +6,7 @@ Thank you for your interest in contributing to Making Mirrors! This document pro
 
 ### Prerequisites
 
-- [Nix](https://nixos.org/download.html) with flakes enabled
+- [Nix](https://nixos.org/download.html) with flakes enabled (strongly recommended for best experience)
 - Git
 
 ### Getting Started
@@ -24,60 +24,87 @@ Thank you for your interest in contributing to Making Mirrors! This document pro
    nix develop
    ```
 
+   > **Why Nix?** Zero configuration setup, reproducible environment across all contributors, and all development tools pre-installed automatically.
+
    This will provide you with:
 
    - Go toolchain (latest stable)
    - Development tools (gopls, golangci-lint, gotools, air)
    - All necessary dependencies
+   - Consistent environment across all team members
 
 3. **Verify your setup:**
 
    ```bash
-   go version
-   go test
+   nix run .#version
+   nix run .#test
    ```
 
 ## Development Workflow
 
-### Making Changes
+### Recommended Nix-Based Workflow
 
-1. **Create a new branch:**
+Using Nix provides the best development experience with zero configuration and perfect reproducibility.
+
+### Step-by-Step Development Flow
+
+1. **Setup environment**: `nix develop` (zero configuration required)
+2. **Create feature branch**: `git checkout -b feature/your-feature-name`
+3. **Make changes** using Nix development tools
+4. **Test changes**: `nix run .#test`
+5. **Format code**: `nix run .#fmt`
+6. **Run linting**: `nix run .#lint`
+7. **Build verification**: `nix run .#build`
+8. **Commit changes**: `git commit -am 'Add feature'`
+9. **Push to branch**: `git push origin feature-name`
+10. **Create Pull Request**
+
+### Alternative Manual Flow (Not Recommended)
+
+If you must work without Nix:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes
+4. Add tests for new functionality
+5. Run tests: `go test ./...`
+6. Format code: `go fmt ./...`
+7. Run linting (if available): `golangci-lint run`
+8. Commit changes: `git commit -am 'Add feature'`
+9. Push to branch: `git push origin feature-name`
+10. Create a Pull Request
+
+### Detailed Development Steps
+
+#### Making Changes
+
+1. **Enter development environment** (if not already done):
 
    ```bash
-   git checkout -b feature/your-feature-name
+   nix develop
    ```
 
-2. **Make your changes** following the coding standards below
-
-3. **Test your changes:**
+2. **Test your changes thoroughly:**
 
    ```bash
-   go test ./...
-   go build
-   ./making-mirrors --help  # Test the CLI
+   nix run .#test
+   nix run .#build
+   nix run .#default -- --help  # Test the CLI
    ```
 
-4. **Format and lint:**
+3. **Format and lint your code:**
 
    ```bash
-   go fmt ./...
-   golangci-lint run
+   nix run .#fmt
+   nix run .#lint
    ```
 
-5. **Test with Nix:**
+4. **Final verification:**
 
    ```bash
-   nix build
-   nix run
+   nix run .#build
+   nix run .#default
    ```
-
-### Coding Standards
-
-- **Go formatting:** Use `go fmt` to format your code
-- **Linting:** Code must pass `golangci-lint run` without warnings
-- **Documentation:** Add comments for exported functions and types
-- **Error handling:** Always handle errors appropriately
-- **Testing:** Add tests for new functionality
 
 ### Commit Guidelines
 
@@ -89,20 +116,42 @@ Thank you for your interest in contributing to Making Mirrors! This document pro
   - `refactor: improve code structure`
   - `test: add or update tests`
 
+## Code Quality Standards
+
+### Coding Standards
+
+- **Go formatting:** Use `nix run .#fmt` for consistent code formatting
+- **Linting:** Code must pass `nix run .#lint` without warnings (golangci-lint included)
+- **Documentation:** Add comments for exported functions and types
+- **Error handling:** Always handle errors appropriately
+- **Testing:** Add tests for new functionality using `nix run .#test`
+
+> **Note:** All code quality tools are pre-configured in the Nix environment for consistent results across contributors.
+
+### Code Review Guidelines
+
+- Ensure all tests pass using `nix run .#test`
+- Code should be formatted with `nix run .#fmt`
+- Linting must pass with `nix run .#lint`
+- Add appropriate documentation for new features
+- Follow Go best practices and project conventions
+- Update CHANGELOG.md for significant changes
+- Update version using `nix run .#set-version` if needed
+
 ## Testing
 
 ### Running Tests
 
 ```bash
-# Run all tests
-go test ./...
+# Run all tests (recommended)
+nix run .#test
 
-# Run tests with coverage
-go test -cover ./...
-
-# Run tests in verbose mode
-go test -v ./...
+# Advanced testing options (using development shell)
+nix develop -c go test -cover ./...  # With coverage
+nix develop -c go test -v ./...      # Verbose output
 ```
+
+> **Recommendation:** Use `nix run .#test` for standard testing as it provides the most consistent environment.
 
 ### Writing Tests
 
@@ -132,10 +181,10 @@ If your changes affect usage or installation:
 1. **Ensure your code passes all checks:**
 
    ```bash
-   go test ./...
-   go fmt ./...
-   golangci-lint run
-   nix build
+   nix run .#test
+   nix run .#fmt
+   nix run .#lint
+   nix run .#build
    ```
 
 2. **Update documentation** if necessary
@@ -150,13 +199,28 @@ If your changes affect usage or installation:
 
 ## Release Process
 
-Releases are managed by maintainers. The process includes:
+### Nix-Based Release Workflow
 
-1. Update `VERSION` file
-2. Update `CHANGELOG.md`
-3. Create a git tag
-4. Build and test across all supported platforms
-5. Create a GitHub release
+Releases are managed by maintainers using the Nix build system:
+
+1. **Update version**: `nix run .#set-version x.y.z`
+2. **Update CHANGELOG.md** with new version details
+3. **Run full test suite**: `nix run .#test`
+4. **Create release builds**: `nix run .#release`
+5. **Verify build artifacts** in `result-release/`
+6. **Commit changes** and create git tag
+7. **Push to GitHub** and create release
+
+### Release Artifacts
+
+The automated release system creates:
+
+- **Cross-platform binaries** for all supported architectures
+- **SHA256 checksums** for integrity verification
+- **Compressed archives** for distribution
+- **Organized directory structure** for easy deployment
+
+> **Benefits:** Nix ensures reproducible, cross-platform releases with automated checksums and packaging.
 
 ## Getting Help
 
