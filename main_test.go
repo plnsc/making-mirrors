@@ -45,7 +45,7 @@ func TestBuildInfo(t *testing.T) {
 		Version:   "0.0.1-alpha",
 		GitCommit: "abc123",
 		BuildTime: "2025-07-23",
-		GoVersion:   "0.0.1-alpha",
+		GoVersion: "0.0.1-alpha",
 	}
 
 	if info.Version == "" {
