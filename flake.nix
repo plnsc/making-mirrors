@@ -1,5 +1,5 @@
 {
-  description = "Making Mirrors - Rust Application";
+  description = "Making Mirrors for Git Repositories";
   inputs = {
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -49,7 +49,7 @@
           ];
 
         meta = with pkgs.lib; {
-          description = "Making Mirrors - A Rust application";
+          description = "Making Mirrors for Git Repositories";
           license = licenses.mit;
           maintainers = [ ];
         };
