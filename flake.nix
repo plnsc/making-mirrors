@@ -187,8 +187,9 @@
             program = toString (
               pkgs.writeShellScript "build" ''
                 echo "🔨 Building making-mirrors..."
-                go build -o making-mirrors
-                echo "✅ Build complete: ./making-mirrors"
+                mkdir -p result/bin
+                go build -o result/bin/making-mirrors
+                echo "✅ Build complete: result/bin/making-mirrors"
               ''
             );
             meta = {
