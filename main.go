@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -24,22 +25,26 @@ func main() {
 	fmt.Println("Making Mirrors - Repository Mirror Tool")
 	fmt.Println("======================================")
 
-	// Get home directory
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		log.Fatalf("Failed to get home directory: %v", err)
-	}
+	// Define CLI flags
+	var registryFile = flag.String("input", "registry.csv", "Path to the registry CSV file")
+	var mirrorsDir = flag.String("output", "$HOME/Code/mirrors", "Directory to store mirrors")
+	flag.Parse()
 
-	mirrorsDir := filepath.Join(homeDir, "Code", "mirrors")
-	fmt.Printf("Output directory: %s\n", mirrorsDir)
+	// Use the CLI flag value (with default if not provided)
+	finalMirrorsDir := *mirrorsDir
+
+	// Expand environment variables and tilde (~) to full paths
+	finalMirrorsDir = expandPath(finalMirrorsDir)
+	fmt.Printf("Output directory: %s\n", finalMirrorsDir)
+	fmt.Printf("Registry file: %s\n", *registryFile)
 
 	// Create mirrors directory if it doesn't exist
-	if err := os.MkdirAll(mirrorsDir, 0755); err != nil {
+	if err := os.MkdirAll(finalMirrorsDir, 0755); err != nil {
 		log.Fatalf("Failed to create mirrors directory: %v", err)
 	}
 
-	// Read repositories from registry.csv
-	repos, err := readRegistry("registry.csv")
+	// Read repositories from registry file
+	repos, err := readRegistry(*registryFile)
 	if err != nil {
 		log.Fatalf("Failed to read registry: %v", err)
 	}
@@ -58,7 +63,7 @@ func main() {
 	var wg sync.WaitGroup
 	for i := 0; i < numWorkers; i++ {
 		wg.Add(1)
-		go worker(i+1, mirrorsDir, repoChan, resultChan, &wg)
+		go worker(i+1, finalMirrorsDir, repoChan, resultChan, &wg)
 	}
 
 	// Send repositories to workers
@@ -86,6 +91,23 @@ func main() {
 	}
 
 	fmt.Printf("\nCompleted! Successfully mirrored %d/%d repositories\n", successCount, len(repos))
+}
+
+// expandPath expands environment variables and tilde (~) in file paths
+func expandPath(path string) string {
+	// First expand environment variables
+	path = os.ExpandEnv(path)
+
+	// Then handle tilde expansion
+	if strings.HasPrefix(path, "~/") {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			log.Fatalf("Failed to get home directory: %v", err)
+		}
+		path = filepath.Join(homeDir, path[2:])
+	}
+
+	return path
 }
 
 func readRegistry(filename string) ([]Repository, error) {
