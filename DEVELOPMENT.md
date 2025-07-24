@@ -66,8 +66,7 @@ This project uses Nix as the primary build system for superior developer experie
  # Install globally
  nix profile install
 
- # Create release builds for all platforms
- nix build .#release
+
 
  # Format code (Go)
  go fmt ./...

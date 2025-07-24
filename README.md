@@ -194,7 +194,6 @@ This project uses Nix as the primary build system, providing superior developer 
 | Format    | `nix develop -c go fmt ./...`      |
 | Lint      | `nix develop -c golangci-lint run` |
 | Install   | `nix profile install`              |
-| Release   | `nix build .#release`              |
 
 For complete migration details, see [docs/unreleased/MIGRATION.md](docs/unreleased/MIGRATION.md).
 
