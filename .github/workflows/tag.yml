@@ -65,22 +65,22 @@ jobs:
 
       - name: Compress binaries into archives
         run: |
-          set -euo pipefail
-          for BIN in output/making-mirrors-*; do
-            # Extract OS and ARCH from filename
+            set -euo pipefail
+            OUTPUT_DIR="output"
+            for BIN in $OUTPUT_DIR/making-mirrors-*; do
             FILENAME=$(basename "$BIN")
             EXT=""
             if [[ "$FILENAME" == *.exe ]]; then
-              EXT=".exe"
+                EXT=".exe"
             fi
             ARCHIVE_NAME="${FILENAME%$EXT}.tar.gz"
             INNER_NAME="making-mirrors$EXT"
             mkdir -p tmp-archive
             cp "$BIN" "tmp-archive/$INNER_NAME"
-            tar -czf "output/$ARCHIVE_NAME" -C tmp-archive "$INNER_NAME"
+            tar -czf "$OUTPUT_DIR/$ARCHIVE_NAME" -C tmp-archive "$INNER_NAME"
             rm -rf tmp-archive
-          done
-          echo "Build complete. Binaries are in the '$OUTPUT_DIR' directory."
+            done
+            echo "Build complete. Binaries are in the '$OUTPUT_DIR' directory."
 
       - name: Calculate SHA256 checksums
         run: |
