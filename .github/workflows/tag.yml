@@ -50,6 +50,7 @@ jobs:
               esac
           }
 
+
           for PLATFORM in "${PLATFORMS[@]}"; do
               IFS="/" read -r GOOS GOARCH <<< "$PLATFORM"
               EXT=""
@@ -62,7 +63,29 @@ jobs:
               env GOOS="$GOOS" GOARCH="$GOARCH" go build -o "$OUTPUT_NAME" main.go
           done
 
+      - name: Compress binaries into archives
+        run: |
+          set -euo pipefail
+          for BIN in output/making-mirrors-*; do
+            # Extract OS and ARCH from filename
+            FILENAME=$(basename "$BIN")
+            EXT=""
+            if [[ "$FILENAME" == *.exe ]]; then
+              EXT=".exe"
+            fi
+            ARCHIVE_NAME="${FILENAME%$EXT}.tar.gz"
+            INNER_NAME="making-mirrors$EXT"
+            mkdir -p tmp-archive
+            cp "$BIN" "tmp-archive/$INNER_NAME"
+            tar -czf "output/$ARCHIVE_NAME" -C tmp-archive "$INNER_NAME"
+            rm -rf tmp-archive
+          done
           echo "Build complete. Binaries are in the '$OUTPUT_DIR' directory."
+
+      - name: Calculate SHA256 checksums
+        run: |
+          cd output
+          shasum -a 256 * > checksums.txt
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
