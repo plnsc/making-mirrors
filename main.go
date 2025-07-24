@@ -188,7 +188,11 @@ func readRegistry(filename string) ([]Repository, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open %s: %v", filename, err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("Warning: failed to close file: %v", err)
+		}
+	}()
 
 	var repos []Repository
 	scanner := bufio.NewScanner(file)

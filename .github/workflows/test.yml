@@ -18,7 +18,7 @@ jobs:
         uses: cachix/install-nix-action@v25
 
       - name: Run Nix tests
-        run: nix run .#test
+        run: nix flake check
 
   go-test:
     name: Go Test

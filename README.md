@@ -186,17 +186,15 @@ This project uses Nix as the primary build system, providing superior developer 
 
 #### Quick Command Reference
 
-| Task        | Nix Command                   |
-| ----------- | ----------------------------- |
-| Build       | `nix run .#build`             |
-| Test        | `nix run .#test`              |
-| Clean       | `nix run .#clean`             |
-| Format      | `nix run .#fmt`               |
-| Lint        | `nix run .#lint`              |
-| Version     | `nix run .#version`           |
-| Set Version | `nix run .#set-version 1.0.0` |
-| Release     | `nix run .#release`           |
-| Dev Shell   | `nix develop`                 |
+| Task      | Nix Command                        |
+| --------- | ---------------------------------- |
+| Build     | `nix build`                        |
+| Test      | `nix flake check`                  |
+| Dev Shell | `nix develop`                      |
+| Format    | `nix develop -c go fmt ./...`      |
+| Lint      | `nix develop -c golangci-lint run` |
+| Install   | `nix profile install`              |
+| Release   | `nix build .#release`              |
 
 For complete migration details, see [docs/unreleased/MIGRATION.md](docs/unreleased/MIGRATION.md).
 

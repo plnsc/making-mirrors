@@ -96,11 +96,15 @@ func TestExpandPath(t *testing.T) {
 			input:    "$TEST_VAR/path",
 			expected: "/custom/path",
 			setup: func() string {
-				os.Setenv("TEST_VAR", "/custom")
+				if err := os.Setenv("TEST_VAR", "/custom"); err != nil {
+					t.Fatalf("Failed to set TEST_VAR: %v", err)
+				}
 				return "/custom/path"
 			},
 			cleanup: func() {
-				os.Unsetenv("TEST_VAR")
+				if err := os.Unsetenv("TEST_VAR"); err != nil {
+					t.Fatalf("Failed to unset TEST_VAR: %v", err)
+				}
 			},
 		},
 	}
@@ -651,7 +655,9 @@ func TestReadRegistryPermissions(t *testing.T) {
 
 	// Restore permissions for cleanup
 	defer func() {
-		os.Chmod(tmpFile, 0644)
+		if err := os.Chmod(tmpFile, 0644); err != nil {
+			t.Fatalf("Failed to restore file permissions: %v", err)
+		}
 	}()
 
 	_, err = readRegistry(tmpFile)

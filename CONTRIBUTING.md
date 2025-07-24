@@ -37,7 +37,8 @@ Thank you for your interest in contributing to Making Mirrors! This document pro
 
    ```bash
    nix run .#version
-   nix run .#test
+   nix build
+   nix flake check
    ```
 
 ## Development Workflow
@@ -51,9 +52,9 @@ Using Nix provides the best development experience with zero configuration and p
 1. **Setup environment**: `nix develop` (zero configuration required)
 2. **Create feature branch**: `git checkout -b feature/your-feature-name`
 3. **Make changes** using Nix development tools
-4. **Test changes**: `nix run .#test`
+4. **Test changes**: `nix flake check`
 5. **Format code**: `nix run .#fmt`
-6. **Run linting**: `nix run .#lint`
+6. **Run linting**: `golangci-lint run`
 7. **Build verification**: `nix run .#build`
 8. **Commit changes**: `git commit -am 'Add feature'`
 9. **Push to branch**: `git push origin feature-name`
@@ -87,7 +88,7 @@ If you must work without Nix:
 2. **Test your changes thoroughly:**
 
    ```bash
-   nix run .#test
+   nix flake check
    nix run .#build
    nix run .#default -- --help  # Test the CLI
    ```
@@ -95,14 +96,14 @@ If you must work without Nix:
 3. **Format and lint your code:**
 
    ```bash
-   nix run .#fmt
-   nix run .#lint
+   go fmt ./...
+   golangci-lint run
    ```
 
 4. **Final verification:**
 
    ```bash
-   nix run .#build
+   nix build
    nix run .#default
    ```
 
@@ -120,23 +121,15 @@ If you must work without Nix:
 
 ### Coding Standards
 
-- **Go formatting:** Use `nix run .#fmt` for consistent code formatting
-- **Linting:** Code must pass `nix run .#lint` without warnings (golangci-lint included)
-- **Documentation:** Add comments for exported functions and types
-- **Error handling:** Always handle errors appropriately
-- **Testing:** Add tests for new functionality using `nix run .#test`
+**Go formatting:** Use `go fmt ./...` for consistent code formatting
+**Linting:** Code must pass `golangci-lint run` without warnings (golangci-lint included)
+**Documentation:** Add comments for exported functions and types
+**Error handling:** Always handle errors appropriately
+**Testing:** Add tests for new functionality using `nix flake check`
 
 > **Note:** All code quality tools are pre-configured in the Nix environment for consistent results across contributors.
 
 ### Code Review Guidelines
-
-- Ensure all tests pass using `nix run .#test`
-- Code should be formatted with `nix run .#fmt`
-- Linting must pass with `nix run .#lint`
-- Add appropriate documentation for new features
-- Follow Go best practices and project conventions
-- Update CHANGELOG.md for significant changes
-- Update version using `nix run .#set-version` if needed
 
 ## Testing
 
@@ -144,7 +137,7 @@ If you must work without Nix:
 
 ```bash
 # Run all tests (recommended)
-nix run .#test
+nix flake check
 
 # Advanced testing options (using development shell)
 nix develop -c go test -cover ./...  # With coverage
@@ -181,10 +174,9 @@ If your changes affect usage or installation:
 1. **Ensure your code passes all checks:**
 
    ```bash
-   nix run .#test
-   nix run .#fmt
-   nix run .#lint
-   nix run .#build
+   nix flake check
+   nix build
+   golangci-lint run
    ```
 
 2. **Update documentation** if necessary

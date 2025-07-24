@@ -41,7 +41,7 @@ This document contains development-specific information for the making-mirrors p
 
    ```bash
    # Using Nix (recommended)
-   nix run .#test
+   nix flake check
 
    # Manual Go testing (if not using Nix)
    go test ./...
@@ -51,32 +51,29 @@ This document contains development-specific information for the making-mirrors p
 
 ### Using Nix (Strongly Recommended)
 
-This project uses Nix as the primary build system for superior developer experience. All development tasks are available as convenient Nix apps:
+This project uses Nix as the primary build system for superior developer experience. All development tasks are available using idiomatic Nix commands:
 
 ```bash
-# Build for current platform
-nix run .#build
+ # Build for current platform
+ nix build
 
-# Run tests
-nix run .#test
+ # Run tests
+ nix flake check
 
-# Clean build artifacts
-nix run .#clean
+ # Enter development shell
+ nix develop
 
-# Format code
-nix run .#fmt
+ # Install globally
+ nix profile install
 
-# Run linter
-nix run .#lint
+ # Create release builds for all platforms
+ nix build .#release
 
-# Show version
-nix run .#version
+ # Format code (Go)
+ go fmt ./...
 
-# Set a new version across all files
-nix run .#set-version 1.0.0
-
-# Create release builds for all platforms
-nix run .#release
+ # Run linter (Go)
+ golangci-lint run
 
 # Install globally
 nix run .#install

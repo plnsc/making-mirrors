@@ -15,16 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Nix-based Development Workflow**: Complete migration from Make to Nix for build automation
-- **Nix Apps for All Build Tasks**: All Makefile functions now available as `nix run .#<command>`
-  - `nix run .#build` - Build the application with Go
-  - `nix run .#test` - Run tests
-  - `nix run .#clean` - Clean build artifacts
-  - `nix run .#fmt` - Format code
-  - `nix run .#lint` - Run linter
-  - `nix run .#version` - Show current version
-  - `nix run .#set-version` - Set version in all files
-  - `nix run .#install` - Install globally with Nix
-  - `nix run .#release` - Create cross-platform release
+  **Nix-based Build & Test Commands**: All build and test tasks now use idiomatic Nix commands:
+  - `nix build` - Build the application
+  - `nix flake check` - Run tests
+  - `nix develop` - Enter the development shell
+  - `nix profile install` - Install globally with Nix
+  - `nix build .#release` - Create cross-platform release
+  - `go fmt ./...` - Format code
+  - `golangci-lint run` - Run linter
 - **Enhanced Development Shell**: Rich development environment with welcome message and command reference
 - **Migration Documentation**:
   - `docs/unreleased/MIGRATION.md` - Complete guide for migrating from Make to Nix
@@ -77,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Makefile with `set-version` target**: Automatically updates version across all files (main.go, flake.nix, main_test.go, VERSION)
 - **Makefile `release` target**: Creates cross-platform builds for all supported architectures
-- **Nix release system**: Equivalent cross-platform release build using `nix run .#release`
+  **Nix release system**: Equivalent cross-platform release build using `nix build .#release`
 - **Automated checksums**: Both Makefile and Nix generate SHA256 checksums for all binaries
 - **Tarball creation**: Compressed release archives with all artifacts
 
