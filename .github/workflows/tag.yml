@@ -63,27 +63,6 @@ jobs:
               env GOOS="$GOOS" GOARCH="$GOARCH" go build -o "$OUTPUT_NAME" main.go
           done
 
-      - name: Compress binaries into archives
-        run: |
-            set -euo pipefail
-            OUTPUT_DIR="output"
-            for BIN in $OUTPUT_DIR/making-mirrors-*; do
-            FILENAME=$(basename "$BIN")
-            EXT=""
-            if [[ "$FILENAME" == *.exe ]]; then
-                EXT=".exe"
-            fi
-            ARCHIVE_NAME="${FILENAME%$EXT}.tar.gz"
-            INNER_NAME="making-mirrors$EXT"
-            TMPDIR=$(mktemp -d)
-            cp "$BIN" "$TMPDIR/$INNER_NAME"
-            tar -czf "$OUTPUT_DIR/$ARCHIVE_NAME" -C "$TMPDIR" "$INNER_NAME"
-            rm -rf "$TMPDIR"
-            done
-            rm -rf tmp-archive
-            done
-            echo "Build complete. Binaries are in the '$OUTPUT_DIR' directory."
-
       - name: Calculate SHA256 checksums
         run: |
           cd output
