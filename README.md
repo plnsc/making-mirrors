@@ -1,6 +1,6 @@
 # Making Mirrors for Git Repositories
 
-![Version](https://img.shields.io/badge/version-0.0.2-alpha-blue)
+![Version](https://img.shields.io/badge/version-v0.0.2-alpha-blue)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/plnsc/making-mirrors/ci.yml?label=build)
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
