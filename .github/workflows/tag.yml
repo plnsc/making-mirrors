@@ -75,9 +75,11 @@ jobs:
             fi
             ARCHIVE_NAME="${FILENAME%$EXT}.tar.gz"
             INNER_NAME="making-mirrors$EXT"
-            mkdir -p tmp-archive
-            cp "$BIN" "tmp-archive/$INNER_NAME"
-            tar -czf "$OUTPUT_DIR/$ARCHIVE_NAME" -C tmp-archive "$INNER_NAME"
+            TMPDIR=$(mktemp -d)
+            cp "$BIN" "$TMPDIR/$INNER_NAME"
+            tar -czf "$OUTPUT_DIR/$ARCHIVE_NAME" -C "$TMPDIR" "$INNER_NAME"
+            rm -rf "$TMPDIR"
+            done
             rm -rf tmp-archive
             done
             echo "Build complete. Binaries are in the '$OUTPUT_DIR' directory."
