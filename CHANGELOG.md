@@ -16,13 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Nix-based Development Workflow**: Complete migration from Make to Nix for build automation
   **Nix-based Build & Test Commands**: All build and test tasks now use idiomatic Nix commands:
+
   - `nix build` - Build the application
   - `nix flake check` - Run tests
   - `nix develop` - Enter the development shell
   - `nix profile install` - Install globally with Nix
-  
+
   - `go fmt ./...` - Format code
   - `golangci-lint run` - Run linter
+
 - **Enhanced Development Shell**: Rich development environment with welcome message and command reference
 - **Migration Documentation**:
   - `docs/unreleased/MIGRATION.md` - Complete guide for migrating from Make to Nix
