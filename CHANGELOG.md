@@ -1,11 +1,8 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## [Unreleased]
+
+## [0.0.2-alpha] - 2025-07-23
 
 ### Removed
 
@@ -102,5 +99,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nix release builds in clean sandbox with proper Go environment variables
 - Both systems inject version from VERSION file into binaries via ldflags
 
-[Unreleased]: https://github.com/plnsc/making-mirrors/compare/v0.0.1-alpha...HEAD
+[Unreleased]: https://github.com/plnsc/making-mirrors/compare/v0.0.2-alpha...HEAD
+[0.0.2-alpha]: https://github.com/plnsc/making-mirrors/releases/tag/v0.0.2-alpha
 [0.0.1-alpha]: https://github.com/plnsc/making-mirrors/releases/tag/v0.0.1-alpha
