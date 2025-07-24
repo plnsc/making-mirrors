@@ -1,6 +1,6 @@
 # Making Mirrors for Git Repositories
 
-![GitHub Tag](https://img.shields.io/github/v/tag/plnsc/marring-mirrors)
+![GitHub Tag](https://img.shields.io/github/v/tag/plnsc/making-mirrors)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/plnsc/making-mirrors/ci.yml?label=build)
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
