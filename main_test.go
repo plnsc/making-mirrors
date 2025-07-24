@@ -17,7 +17,7 @@ func TestAppMetadata(t *testing.T) {
 		expected string
 	}{
 		{"AppName", AppName, "making-mirrors"},
-		{"AppVersion", AppVersion, "0.0.2-alpha"},
+		{"AppVersion", AppVersion, "0.0.3"},
 		{"AppAuthor", AppAuthor, "Paulo Nascimento <paulornasc@gmail.com>"},
 		{"AppLicense", AppLicense, "MIT"},
 	}
@@ -43,7 +43,7 @@ func TestDefaultPaths(t *testing.T) {
 
 func TestBuildInfo(t *testing.T) {
 	info := BuildInfo{
-		Version:   "0.0.2-alpha",
+		Version:   "0.0.3",
 		GitCommit: "abc123",
 		BuildTime: "2025-07-23",
 		GoVersion: runtime.Version(),
@@ -747,14 +747,14 @@ func TestReadRegistryMalformed(t *testing.T) {
 func TestBuildInfoStruct(t *testing.T) {
 	t.Run("BuildInfo with all fields", func(t *testing.T) {
 		info := BuildInfo{
-			Version:   "0.0.2-alpha",
+			Version:   "0.0.3",
 			GitCommit: "abc123def",
 			BuildTime: "2025-07-23T10:00:00Z",
 			GoVersion: runtime.Version(),
 		}
 
-		if info.Version != "0.0.2-alpha" {
-			t.Errorf("Version = %q, want %q", info.Version, "0.0.2-alpha")
+		if info.Version != "0.0.3" {
+			t.Errorf("Version = %q, want %q", info.Version, "0.0.3")
 		}
 		if info.GitCommit != "abc123def" {
 			t.Errorf("GitCommit = %q, want %q", info.GitCommit, "abc123def")
