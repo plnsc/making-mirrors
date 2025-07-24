@@ -1,8 +1,7 @@
 # Making Mirrors for Git Repositories
 
 ![Version](https://img.shields.io/badge/version-0.0.1--alpha-blue)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/plnsc/making-mirrors/build.yml?label=build)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/plnsc/making-mirrors/test.yml?label=test)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/plnsc/making-mirrors/ci.yml?label=ci)
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
 A Go command-line application for creating and maintaining mirrors of Git repositories. It reads a registry of repositories and creates local bare Git mirrors with concurrent processing.
