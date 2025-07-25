@@ -1,10 +1,12 @@
-# Making Mirrors for Git Repositories
+# Making Mirrors: Create mirrors of Git repositories
 
 ![GitHub Tag](https://img.shields.io/github/v/tag/plnsc/making-mirrors)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/plnsc/making-mirrors/ci.yml?label=build)
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
-A Go command-line application for creating and maintaining mirrors of Git repositories. It reads a registry of repositories and creates local bare Git mirrors with concurrent processing.
+Making Mirrors is a Go command-line tool for creating and maintaining local copies of Git repositories. It does so by using `git clone --mirror` to get local bare Git mirrors of remote repositories in well known providers.
+
+Own local stored mirrors of what is important or most used. Be able to manage a curated list of mirrors for resource limited storage. It provides a copy of interest-specific repositories to create a layer of resilience and increase availability in software deployment.
 
 ## Features
 
@@ -14,15 +16,101 @@ A Go command-line application for creating and maintaining mirrors of Git reposi
 - **Flexible Configuration**: Customizable input and output directories
 - **Cross-Platform**: Works on Linux, macOS, and Windows
 
-### Registry File Format
+### Future
 
-The registry file contains one repository per line in the format:
+- Read-only host capabilities enabled. Example: Serve the repos in equivalent servers like `https://unofficial-local-github-mirror/torvalds/linux.git`.
+- Accept plain URL as repository input. Currently only the short format is accepted.
+
+### Known issues
+
+- Cloning big repositories\* is a work in progress. \* (Like the ones in the examples)
+
+### Usage
+
+1. **Create a registry file** with repositories to mirror (Default: `~/Code/mirrors/registry.txt`):
+
+   ```text
+   github:golang/go
+   github:NixOS/nix
+   github:NixOS/nixpkgs
+   github:torvalds/linux
+   gitlab:gitlab-org/gitlab
+   ```
+
+2. **Run the application**:
+
+   ```bash
+   making-mirrors
+   ```
+
+   Or with custom paths:
+
+   > **Note:** Make sure the directories and the registry file exist.
+
+   ```bash
+   making-mirrors -input ./Repos/registry.txt -output ./Repos/mirrors
+   ```
+
+3. **Artifacts**:
+
+   This will pull the repositories to a default `~/Code/mirrors`. See **Directory structure** for more information.
+
+#### Install with Go
+
+```bash
+go install github.com/plnsc/making-mirrors@latest
+```
+
+#### Install with Nix
+
+```bash
+nix profile install github:plnsc/making-mirrors
+```
+
+#### Build from source
+
+> **Note:** Consider using Nix instead for a consistent experience.
+
+```bash
+git clone https://github.com/plnsc/making-mirrors.git
+cd making-mirrors
+go build # or `nix build`
+```
+
+## How It Works
+
+The application creates **bare Git mirrors** using `git clone --mirror`, which:
+
+- Downloads all branches and tags
+- Maintains exact copies of the remote repositories
+- Stores repositories in a structured directory format: `provider/owner/repository`
+- Supports incremental updates with `git remote update`
+
+### Command Line Options
+
+```text
+making-mirrors [flags]
+
+Flags:
+  -input string
+        Path to the registry file (default "$HOME/Code/mirrors/registry.txt")
+  -output string
+        Directory to store mirrors (default "$HOME/Code/mirrors")
+  -version
+        Show version information
+```
+
+### Registry file format
+
+The registry file consists a text file that contains one repository per line. The repositories are written in a short format so the software can expand it to the right targets.
+
+Format:
 
 ```text
 provider:owner/repository
 ```
 
-Supported providers:
+Currently supported providers:
 
 - `github` - GitHub repositories
 - `gitlab` - GitLab repositories
@@ -61,94 +149,8 @@ azure:myorg/myproject
 ```
 
 Lines starting with `#` are treated as comments and ignored.
-Download the latest release from the [releases page](https://github.com/plnsc/making-mirrors/releases).
 
-#### Option 3: Install with Go
-
-```bash
-go install github.com/plnsc/making-mirrors@latest
-```
-
-#### Option 4: Build from Source (Not Recommended)
-
-> **Note:** Building from source requires manual dependency management. Consider using Nix instead for a better experience.
-
-```bash
-git clone https://github.com/plnsc/making-mirrors.git
-cd making-mirrors
-go build
-```
-
-### Basic Usage
-
-1. **Create a registry file** (`registry.txt`) with repositories to mirror:
-
-   ```text
-   github:torvalds/linux
-   github:golang/go
-   gitlab:gitlab-org/gitlab
-   bitbucket:atlassian/localstack
-   ```
-
-2. **Run the application**:
-
-   ```bash
-   making-mirrors
-   ```
-
-   Or with custom paths:
-
-   ```bash
-   making-mirrors -input ./my-repos.txt -output ./my-mirrors
-   ```
-
-## Command Line Options
-
-```text
-making-mirrors [flags]
-
-Flags:
-  -input string
-        Path to the registry file (default "$HOME/Code/mirrors/registry.txt")
-  -output string
-        Directory to store mirrors (default "$HOME/Code/mirrors")
-  -version
-        Show version information
-```
-
-## Examples
-
-### Mirror to Custom Directory
-
-```bash
-making-mirrors -output /backup/git-mirrors
-```
-
-### Use Custom Registry File
-
-```bash
-making-mirrors -input ./important-repos.txt -output ./mirrors
-```
-
-### Environment Variable Expansion
-
-Both input and output paths support environment variable expansion:
-
-```bash
-export MIRROR_DIR="/data/mirrors"
-making-mirrors -output "$MIRROR_DIR"
-```
-
-## How It Works
-
-The application creates **bare Git mirrors** using `git clone --mirror`, which:
-
-- Downloads all branches and tags
-- Maintains exact copies of the remote repositories
-- Stores repositories in a structured directory format: `provider/owner/repository`
-- Supports incremental updates with `git remote update`
-
-### Directory Structure
+### Directory structure
 
 Mirrors are organized as follows:
 
@@ -171,19 +173,7 @@ mirrors/
 
 For development instructions, build automation, cross-platform compilation, and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
-**Recommended Development Setup**: Use Nix for the best development experience with zero configuration. See [docs/unreleased/MIGRATION.md](docs/unreleased/MIGRATION.md) for the complete command reference and migration benefits.
-
-### Build System Migration
-
-This project uses Nix as the primary build system, providing superior developer experience compared to traditional approaches:
-
-- **Zero Dependencies**: No need to install Go, Make, or manage toolchains
-- **Reproducible Builds**: Identical environments guaranteed across all platforms
-- **Rich Development Environment**: Pre-configured with Go, linters, and development tools
-- **Cross-Platform Consistency**: Perfect experience on Linux, macOS, and Windows
-- **Instant Setup**: Just run `nix develop` and you're ready to contribute
-
-#### Quick Command Reference
+### Quick Command Reference
 
 | Task      | Nix Command                        |
 | --------- | ---------------------------------- |
@@ -193,8 +183,6 @@ This project uses Nix as the primary build system, providing superior developer 
 | Format    | `nix develop -c go fmt ./...`      |
 | Lint      | `nix develop -c golangci-lint run` |
 | Install   | `nix profile install`              |
-
-For complete migration details, see [docs/unreleased/MIGRATION.md](docs/unreleased/MIGRATION.md).
 
 ## Use Cases
 
@@ -223,13 +211,6 @@ making-mirrors/
 └── VERSION            # Current version (0.0.1-alpha)
 ```
 
-## Performance
-
-- **Concurrent Processing**: Utilizes all CPU cores for parallel operations
-- **Incremental Updates**: Only fetches changes for existing repositories
-- **Efficient Storage**: Bare repositories use minimal disk space
-- **Progress Tracking**: Real-time status updates during operations
-
 ## Troubleshooting
 
 ### Common Issues
@@ -256,10 +237,10 @@ making-mirrors/
 - View debug output by running with verbose Git operations
 - Ensure all dependencies (Git, Go) are properly installed
 
-## License
-
-MIT License - see [LICENSE.md](LICENSE.md) for details.
-
 ## Author
 
-Paulo Nascimento <paulornasc@gmail.com> - [GitHub](https://github.com/plnsc)
+Paulo Nascimento. [GitHub](https://github.com/plnsc). [Personal Blog](https://taboza.dev)
+
+## License
+
+ [MIT License](LICENSE.md)
