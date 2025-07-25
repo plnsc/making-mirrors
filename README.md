@@ -48,7 +48,7 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
 - Read-only host capabilities enabled. Example: Serve the repos in equivalent servers like `https://unofficial-local-github-mirror/torvalds/linux.git`.
 - Accept plain URL as repository input. Currently only the short format is accepted.
 - Create a command to analise how much of local storage will be used after each sync.
-- Service to run scheduled sync. 
+- Service to run scheduled sync.
 
 ### Known issues
 
@@ -82,7 +82,7 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
 
 3. **Artifacts**:
 
-   This will pull the repositories to a default `~/Code/mirrors` folder. See [Directory structure](#directory-structure) for more information about it.
+   This will pull the repositories to a default `~/Code/mirrors` folder. See [Directory structure](#directory-structure).
 
 ### Install with Nix
 
