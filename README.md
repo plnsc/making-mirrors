@@ -30,6 +30,7 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
   - [Getting Help](#getting-help)
 - [Development](#development)
   - [Quick Command Reference](#quick-command-reference)
+  - [Why?](#why)
 - [Author](#author)
 - [License](#license)
 
@@ -54,6 +55,7 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
 - Read-only host capabilities enabled. Example: Serve the repos in equivalent servers like `https://unofficial-local-github-mirror/torvalds/linux.git`.
 - Accept plain URL as repository input. Currently only the short format is accepted.
 - Create a command to analise how much of local storage will be used after each sync.
+- Service to run scheduled sync. 
 
 ### Known issues
 
@@ -243,6 +245,10 @@ For development instructions, build automation, cross-platform compilation, and 
 | Format    | `nix develop -c go fmt ./...`      |
 | Lint      | `nix develop -c golangci-lint run` |
 | Install   | `nix profile install`              |
+
+### Why?
+
+I'm building a personal knowledge database and code repositories are one of its data silos. Basically I wanna be able to always have a copy of knowledge and tools that I use daily.
 
 ## Author
 
