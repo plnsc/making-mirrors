@@ -4,7 +4,7 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/plnsc/making-mirrors/ci.yml?label=build)
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
-Making Mirrors is a Go command-line tool for creating and maintaining local copies of Git repositories. It does so by using `git clone --mirror` to get local bare Git mirrors of remote repositories in well known providers. [Get started](#get-started).
+Making Mirrors is a Go command-line tool for creating and maintaining local copies of Git repositories. It does so by using `git clone --mirror` to get local bare Git mirrors of remote repositories in well known providers. Start by reading [Use Cases](#use-cases) or [Get started](#get-started).
 
 Be able to manage a curated list of mirrors with reduced resource storage. It provides a copy of interest-specific repositories, which creates a layer of resilience and increase availability to import development resources.
 
