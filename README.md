@@ -10,6 +10,7 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
 
 ## Index
 
+(Create index here)
 
 ## Use Cases
 
@@ -22,7 +23,7 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
 ## Features
 
 - **Incremental Updates**: Updates existing mirrors without re-cloning
-- **Supported Providers**:  GitHub, GitLab, Bitbucket, Gitea, AWS CodeCommit, and Azure Repos
+- **Supported Providers**: GitHub, GitLab, Bitbucket, Gitea, AWS CodeCommit, and Azure Repos
 - **Concurrent Processing**: Uses all available CPU cores for fast mirroring
 - **Flexible Configuration**: Customizable input and output directories
 - **Cross-Platform**: Works on Linux, macOS, and Windows
@@ -65,7 +66,8 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
 
 3. **Artifacts**:
 
-   This will pull the repositories to a default `~/Code/mirrors` folder.  See [Directory structured](#directory-structure) for more information about it.
+   This will pull the repositories to a default `~/Code/mirrors` folder. See [Directory structured](#directory-structure) for more information about it.
+
 ### Install with Nix
 
 ```bash
@@ -227,4 +229,4 @@ Paulo Nascimento. [GitHub](https://github.com/plnsc). [Personal Blog](https://ta
 
 ## License
 
- [MIT License](LICENSE.md)
+[MIT License](LICENSE.md)
