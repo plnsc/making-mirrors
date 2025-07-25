@@ -1,16 +1,37 @@
-# Making Mirrors: Create mirrors of Git repositories
+# 🪞 Making Mirrors: Create mirrors of Git repositories
 
 ![GitHub Tag](https://img.shields.io/github/v/tag/plnsc/making-mirrors)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/plnsc/making-mirrors/ci.yml?label=build)
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
-Making Mirrors is a Go command-line tool for creating and maintaining local copies of Git repositories. It does so by using `git clone --mirror` to get local bare Git mirrors of remote repositories in well known providers.
+Making Mirrors is a Go command-line tool for creating and maintaining local copies of Git repositories. It does so by using `git clone --mirror` to get local bare Git mirrors of remote repositories in well known providers. [Get started](#get-started).
 
-Be able to manage a curated list of mirrors with reduced resource storage. It provides a copy of interest-specific repositories, which creates a layer of resilience and increase availability to the resources.
+Be able to manage a curated list of mirrors with reduced resource storage. It provides a copy of interest-specific repositories, which creates a layer of resilience and increase availability to import development resources.
 
 ## Index
 
-(Create index here)
+- [Use Cases](#use-cases)
+- [Features](#features)
+- [Future](#future)
+- [Known issues](#known-issues)
+- [Get started](#get-started)
+  - [Install with Nix](#install-with-nix)
+  - [Install with Go](#install-with-go)
+  - [Build from source](#build-from-source)
+- [How It Works](#how-it-works)
+  - [Command Line Options](#command-line-options)
+  - [Registry file format](#registry-file-format)
+  - [Directory structure](#directory-structure)
+- [Troubleshooting](#troubleshooting)
+  - [Common Issues](#common-issues)
+    - [Repository Clone Fails](#repository-clone-fails)
+    - [Permission Denied](#permission-denied)
+    - [Out of Disk Space](#out-of-disk-space)
+  - [Getting Help](#getting-help)
+- [Development](#development)
+  - [Quick Command Reference](#quick-command-reference)
+- [Author](#author)
+- [License](#license)
 
 ## Use Cases
 
@@ -38,7 +59,7 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
 
 - Cloning big repositories\* is a work in progress. \* (Like the ones in the examples)
 
-## Usage
+## Get started
 
 1. **Create a registry file** with repositories to mirror (Default: `~/Code/mirrors/registry.txt`):
 
@@ -66,7 +87,7 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
 
 3. **Artifacts**:
 
-   This will pull the repositories to a default `~/Code/mirrors` folder. See [Directory structured](#directory-structure) for more information about it.
+   This will pull the repositories to a default `~/Code/mirrors` folder. See [Directory structure](#directory-structure) for more information about it.
 
 ### Install with Nix
 
