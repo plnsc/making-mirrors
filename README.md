@@ -84,16 +84,16 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
 
    This will pull the repositories to a default `~/Code/mirrors` folder. See [Directory structure](#directory-structure).
 
-### Install with Nix
-
-```bash
-nix profile install github:plnsc/making-mirrors
-```
-
 ### Install with Go
 
 ```bash
 go install github.com/plnsc/making-mirrors@latest
+```
+
+### Install with Nix
+
+```bash
+nix profile install github:plnsc/making-mirrors
 ```
 
 ### Build from source
