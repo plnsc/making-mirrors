@@ -23,14 +23,7 @@ Be able to manage a curated list of mirrors with reduced resource storage. It pr
   - [Registry file format](#registry-file-format)
   - [Directory structure](#directory-structure)
 - [Troubleshooting](#troubleshooting)
-  - [Common Issues](#common-issues)
-    - [Repository Clone Fails](#repository-clone-fails)
-    - [Permission Denied](#permission-denied)
-    - [Out of Disk Space](#out-of-disk-space)
-  - [Getting Help](#getting-help)
 - [Development](#development)
-  - [Quick Command Reference](#quick-command-reference)
-  - [Why?](#why)
 - [Author](#author)
 - [License](#license)
 
@@ -233,22 +226,9 @@ mirrors/
 
 ## Development
 
+I'm building a personal knowledge database and code repositories are one of its data silos. Basically I wanna be able to always have a copy of knowledge and tools that I use daily. This project a move in this direction.
+
 For development instructions, build automation, cross-platform compilation, and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
-
-### Quick Command Reference
-
-| Task      | Nix Command                        |
-| --------- | ---------------------------------- |
-| Build     | `nix build`                        |
-| Test      | `nix flake check`                  |
-| Dev Shell | `nix develop`                      |
-| Format    | `nix develop -c go fmt ./...`      |
-| Lint      | `nix develop -c golangci-lint run` |
-| Install   | `nix profile install`              |
-
-### Why?
-
-I'm building a personal knowledge database and code repositories are one of its data silos. Basically I wanna be able to always have a copy of knowledge and tools that I use daily.
 
 ## Author
 
