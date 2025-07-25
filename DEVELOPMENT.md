@@ -2,6 +2,25 @@
 
 This document contains development-specific information for the making-mirrors project.
 
+## Project Structure
+
+```text
+making-mirrors/
+├── main.go            # Main application
+├── main_test.go       # Tests
+├── go.mod             # Go dependencies
+├── docs/              # Documentation
+│   └── unreleased/    # Unreleased documentation
+│       ├── MIGRATION.md  # Make to Nix migration guide
+│       ├── MIGRATION_SUMMARY.md  # Migration summary
+│       ├── DOCUMENTATION_UPDATE_SUMMARY.md  # Doc updates
+│       └── SET_VERSION_FIX.md  # Set-version implementation fix
+├── flake.nix          # Nix flake (build automation)
+├── CONTRIBUTING.md    # Contribution guidelines
+├── CHANGELOG.md       # Version history
+└── VERSION            # Current version (0.0.1-alpha)
+```
+
 ## Development Environment
 
 ### Requirements

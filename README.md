@@ -6,26 +6,38 @@
 
 Making Mirrors is a Go command-line tool for creating and maintaining local copies of Git repositories. It does so by using `git clone --mirror` to get local bare Git mirrors of remote repositories in well known providers.
 
-Own local stored mirrors of what is important or most used. Be able to manage a curated list of mirrors for resource limited storage. It provides a copy of interest-specific repositories to create a layer of resilience and increase availability in software deployment.
+Be able to manage a curated list of mirrors with reduced resource storage. It provides a copy of interest-specific repositories, which creates a layer of resilience and increase availability to the resources.
+
+## Index
+
+
+## Use Cases
+
+- **Backup Strategy**: Create local backups of important repositories
+- **Offline Development**: Work with repositories when internet is limited
+- **Repository Analysis**: Bulk analysis of multiple repositories
+- **CI/CD Mirroring**: Maintain local copies for build systems
+- **Research**: Academic research requiring repository data
 
 ## Features
 
-- **Concurrent Processing**: Uses all available CPU cores for fast mirroring
-- **Multiple Providers**: Supports GitHub, GitLab, Bitbucket, Gitea, AWS CodeCommit, and Azure Repos
 - **Incremental Updates**: Updates existing mirrors without re-cloning
+- **Supported Providers**:  GitHub, GitLab, Bitbucket, Gitea, AWS CodeCommit, and Azure Repos
+- **Concurrent Processing**: Uses all available CPU cores for fast mirroring
 - **Flexible Configuration**: Customizable input and output directories
 - **Cross-Platform**: Works on Linux, macOS, and Windows
 
-### Future
+## Future
 
 - Read-only host capabilities enabled. Example: Serve the repos in equivalent servers like `https://unofficial-local-github-mirror/torvalds/linux.git`.
 - Accept plain URL as repository input. Currently only the short format is accepted.
+- Create a command to analise how much of local storage will be used after each sync.
 
 ### Known issues
 
 - Cloning big repositories\* is a work in progress. \* (Like the ones in the examples)
 
-### Usage
+## Usage
 
 1. **Create a registry file** with repositories to mirror (Default: `~/Code/mirrors/registry.txt`):
 
@@ -53,21 +65,20 @@ Own local stored mirrors of what is important or most used. Be able to manage a 
 
 3. **Artifacts**:
 
-   This will pull the repositories to a default `~/Code/mirrors`. See **Directory structure** for more information.
-
-#### Install with Go
-
-```bash
-go install github.com/plnsc/making-mirrors@latest
-```
-
-#### Install with Nix
+   This will pull the repositories to a default `~/Code/mirrors` folder.  See [Directory structured](#directory-structure) for more information about it.
+### Install with Nix
 
 ```bash
 nix profile install github:plnsc/making-mirrors
 ```
 
-#### Build from source
+### Install with Go
+
+```bash
+go install github.com/plnsc/making-mirrors@latest
+```
+
+### Build from source
 
 > **Note:** Consider using Nix instead for a consistent experience.
 
@@ -169,48 +180,6 @@ mirrors/
         └── stash/          # Bare Git repository
 ```
 
-## Development
-
-For development instructions, build automation, cross-platform compilation, and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
-
-### Quick Command Reference
-
-| Task      | Nix Command                        |
-| --------- | ---------------------------------- |
-| Build     | `nix build`                        |
-| Test      | `nix flake check`                  |
-| Dev Shell | `nix develop`                      |
-| Format    | `nix develop -c go fmt ./...`      |
-| Lint      | `nix develop -c golangci-lint run` |
-| Install   | `nix profile install`              |
-
-## Use Cases
-
-- **Backup Strategy**: Create local backups of important repositories
-- **Offline Development**: Work with repositories when internet is limited
-- **Repository Analysis**: Bulk analysis of multiple repositories
-- **CI/CD Mirroring**: Maintain local copies for build systems
-- **Research**: Academic research requiring repository data
-
-## Project Structure
-
-```text
-making-mirrors/
-├── main.go            # Main application
-├── main_test.go       # Tests
-├── go.mod             # Go dependencies
-├── docs/              # Documentation
-│   └── unreleased/    # Unreleased documentation
-│       ├── MIGRATION.md  # Make to Nix migration guide
-│       ├── MIGRATION_SUMMARY.md  # Migration summary
-│       ├── DOCUMENTATION_UPDATE_SUMMARY.md  # Doc updates
-│       └── SET_VERSION_FIX.md  # Set-version implementation fix
-├── flake.nix          # Nix flake (build automation)
-├── CONTRIBUTING.md    # Contribution guidelines
-├── CHANGELOG.md       # Version history
-└── VERSION            # Current version (0.0.1-alpha)
-```
-
 ## Troubleshooting
 
 ### Common Issues
@@ -236,6 +205,21 @@ making-mirrors/
 - Check the repository [issues](https://github.com/plnsc/making-mirrors/issues) for known problems
 - View debug output by running with verbose Git operations
 - Ensure all dependencies (Git, Go) are properly installed
+
+## Development
+
+For development instructions, build automation, cross-platform compilation, and contribution guidelines, see [DEVELOPMENT.md](DEVELOPMENT.md).
+
+### Quick Command Reference
+
+| Task      | Nix Command                        |
+| --------- | ---------------------------------- |
+| Build     | `nix build`                        |
+| Test      | `nix flake check`                  |
+| Dev Shell | `nix develop`                      |
+| Format    | `nix develop -c go fmt ./...`      |
+| Lint      | `nix develop -c golangci-lint run` |
+| Install   | `nix profile install`              |
 
 ## Author
 
