@@ -2,10 +2,30 @@ baseURL: https://taboza.dev
 languageCode: pt-BR
 title: taboza.dev
 theme: ["PaperMod"]
-enableRobotsTXT: true
 
-# Disable taxonomies temporally (categories and tags)
-taxonomies: {}
+enableRobotsTXT: true
+enableEmoji: true
+enableInlineShortcodes: true
+enableGitInfo: true
+
+taxonomies:
+  tag: tags
+
+menu:
+  main:
+    - identifier: posts
+      name: Posts
+      url: /posts
+      weight: 10
+    - identifier: tags
+      name: Tags
+      url: /tags
+      weight: 30
+    - identifier: archives
+      name: Archives
+      url: /archives
+      weight: 40
+
 
 params:
 
