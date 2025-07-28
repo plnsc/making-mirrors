@@ -5,8 +5,6 @@ theme: ["PaperMod"]
 
 enableRobotsTXT: true
 enableEmoji: true
-enableInlineShortcodes: true
-enableGitInfo: true
 
 titleCaseStyle: "none"
 
