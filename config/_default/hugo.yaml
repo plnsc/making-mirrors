@@ -1,57 +1,51 @@
 baseURL: https://taboza.dev
-languageCode: pt-BR
-title: Blog de Paulo
 theme: ["PaperMod"]
-
 enableRobotsTXT: true
 enableEmoji: true
-
 titleCaseStyle: "none"
-
 taxonomies:
   tag: tags
 
-menu:
-  main:
-    - identifier: posts
-      name: Posts
-      url: /posts
-      weight: 10
-    - identifier: tags
-      name: Tags
-      url: /tags
-      weight: 20
-    - identifier: archives
-      name: Archives
-      url: /archives
-      weight: 100
-
-
-params:
-
-  profileMode:
-    enabled: true
-    title: Paulo T. Nascimento
-    imageUrl: 451f7e89247904160e086c31b96821a00aa8c4f33ffedda0c92933ea68b78bc3.jpg
-    imageTitle: Foto de Paulo
-
-  socialIcons:
-    - name: linkedin
-      url: https://www.linkedin.com/in/plnsc
-    - name: bluesky
-      url: https://bsky.app/profile/taboza.dev
-    - name: telegram
-      url: https://t.me/plnsct
-    - name: github
-      url: https://github.com/plnsc
-    - name: gitlab
-      url: https://gitlab.com/plnsc
-
-  assets:
-    favicon: /favicon.ico
-    favicon16x16: /favicon.ico
-    favicon32x32: /favicon-32x32.ico
-
-  label:
-    icon: /pe-de-acerola-32x32.webp
-    iconHeight: 32
+languages:
+  pt-br:
+    languageName: Português Brasileiro
+    languageCode: pt-BR
+    title: blog de paulo
+    menu:
+      main:
+        - identifier: posts
+          name: posts
+          url: /posts
+          weight: 10
+        - identifier: tags
+          name: tags
+          url: /tags
+          weight: 20
+        - identifier: archives
+          name: archives
+          url: /archives
+          weight: 100
+    params:
+      profileMode:
+        enabled: true
+        title: Paulo T. Nascimento
+        imageUrl: 451f7e89247904160e086c31b968.jpg
+        imageTitle: Foto de Paulo
+      socialIcons:
+        - name: linkedin
+          url: https://www.linkedin.com/in/plnsc
+        - name: bluesky
+          url: https://bsky.app/profile/taboza.dev
+        - name: telegram
+          url: https://t.me/plnsct
+        - name: github
+          url: https://github.com/plnsc
+        - name: gitlab
+          url: https://gitlab.com/plnsc
+      assets:
+        favicon: /favicon.ico
+        favicon16x16: /favicon.ico
+        favicon32x32: /favicon-32x32.ico
+      label:
+        icon: /pe-de-acerola-32x32.webp
+        iconHeight: 32
