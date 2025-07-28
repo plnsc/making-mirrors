@@ -33,5 +33,5 @@ params:
     favicon32x32: /favicon-32x32.ico
 
   label:
-    icon: /pe-de-acerola-32x32.png
+    icon: /pe-de-acerola-32x32.webp
     iconHeight: 32
