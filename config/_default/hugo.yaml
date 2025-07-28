@@ -26,3 +26,12 @@ params:
       url: https://github.com/plnsc
     - name: gitlab
       url: https://gitlab.com/plnsc
+
+  assets:
+    favicon: /favicon.ico
+    favicon16x16: /favicon.ico
+    favicon32x32: /favicon-32x32.ico
+
+  label:
+    icon: /favicon-32x32.ico
+    iconHeight: 32
