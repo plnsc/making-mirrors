@@ -1,4 +1,5 @@
 baseURL: https://taboza.dev
+defaultContentLanguage: pt-br
 theme: ["PaperMod"]
 enableRobotsTXT: true
 enableEmoji: true
@@ -21,9 +22,9 @@ languages:
           name: tags
           url: /tags
           weight: 20
-        - identifier: archives
-          name: archives
-          url: /archives
+        - identifier: arquivo
+          name: arquivo
+          url: /arquivo
           weight: 100
     params:
       profileMode:
@@ -31,6 +32,48 @@ languages:
         title: Paulo T. Nascimento
         imageUrl: 451f7e89247904160e086c31b968.jpg
         imageTitle: Foto de Paulo
+      socialIcons:
+        - name: linkedin
+          url: https://www.linkedin.com/in/plnsc
+        - name: bluesky
+          url: https://bsky.app/profile/taboza.dev
+        - name: telegram
+          url: https://t.me/plnsct
+        - name: github
+          url: https://github.com/plnsc
+        - name: gitlab
+          url: https://gitlab.com/plnsc
+      assets:
+        favicon: /favicon.ico
+        favicon16x16: /favicon.ico
+        favicon32x32: /favicon-32x32.ico
+      label:
+        icon: /pe-de-acerola-32x32.webp
+        iconHeight: 32
+  en:
+    languageName: International English
+    languageCode: en
+    title: blog de paulo
+    menu:
+      main:
+        - identifier: posts
+          name: posts
+          url: /en/posts
+          weight: 10
+        - identifier: tags
+          name: tags
+          url: /en/tags
+          weight: 20
+        - identifier: archive
+          name: archive
+          url: /en/archive
+          weight: 100
+    params:
+      profileMode:
+        enabled: true
+        title: Paulo T. Nascimento
+        imageUrl: 451f7e89247904160e086c31b968.jpg
+        imageTitle: Photo of Paulo
       socialIcons:
         - name: linkedin
           url: https://www.linkedin.com/in/plnsc
