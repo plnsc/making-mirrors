@@ -8,6 +8,8 @@ enableEmoji: true
 enableInlineShortcodes: true
 enableGitInfo: true
 
+titleCaseStyle: "none"
+
 taxonomies:
   tag: tags
 
@@ -20,11 +22,11 @@ menu:
     - identifier: tags
       name: Tags
       url: /tags
-      weight: 30
+      weight: 20
     - identifier: archives
       name: Archives
       url: /archives
-      weight: 40
+      weight: 100
 
 
 params:
