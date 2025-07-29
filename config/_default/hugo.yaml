@@ -4,14 +4,14 @@ theme: ["PaperMod"]
 enableRobotsTXT: true
 enableEmoji: true
 titleCaseStyle: "none"
-taxonomies:
-  tag: tags
 
 languages:
   pt-br:
-    languageName: Português Brasileiro
-    languageCode: pt-BR
+    languageName: Português (Brasil)
+    languageCode: pt-br
     title: blog de paulo
+    taxonomies:
+      tag: tags
     menu:
       main:
         - identifier: posts
@@ -51,9 +51,11 @@ languages:
         icon: /pe-de-acerola-32x32.webp
         iconHeight: 32
   en:
-    languageName: International English
+    languageName: English
     languageCode: en
     title: blog de paulo
+    taxonomies:
+      tag: tags
     menu:
       main:
         - identifier: posts

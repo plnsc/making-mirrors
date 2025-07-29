@@ -1,5 +1,5 @@
 ---
-lang: pt-BR
+lang: pt-br
 title: "arquivo"
 layout: "archives"
 url: "/arquivo"
